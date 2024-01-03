@@ -1,0 +1,72 @@
+<div class="style">
+  <app-modal-header [titulo]="titulo" (dismiss)="dismiss()"></app-modal-header>
+  <div class="modal-body">
+    <div class="container">
+      <div class="modal-body">
+        <form [formGroup]="formulario">
+          <div class="row">
+            <div class="col-md-6">
+              <label for="nombre" class="col-form-label">Nombre:</label>
+              <input type="text" class="form-control" id="nombre" formControlName="nombre">
+              <div
+                *ngIf="formulario?.get('nombre')?.invalid && (formulario?.get('nombre')?.dirty || formulario?.get('nombre')?.touched)">
+                <div *ngIf="formulario?.get('nombre')?.hasError('required')" class="text-danger font-weight-bold" style="font-family:Arial, Helvetica, sans-serif; font-size: smaller;">
+                  Campo Obligatorio*
+                </div>
+                <div *ngIf="formulario?.get('nombre')?.hasError('hasSymbols')" class="text-danger font-weight-bold">
+                  Campo Obligatorio*
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label for="siglas" class="col-form-label">Siglas:</label>
+              <input type="text" class="form-control" id="siglas" formControlName="siglas">
+              <div
+                *ngIf="formulario?.get('siglas')?.invalid && (formulario?.get('siglas')?.dirty || formulario?.get('siglas')?.touched)">
+                <div *ngIf="formulario?.get('siglas')?.hasError('required')" class="text-danger font-weight-bold">
+                  Campo Obligatorio *
+                </div>
+                <div *ngIf="formulario?.get('siglas')?.hasError('hasSymbols')" class="text-danger font-weight-bold">
+                  Campo Obligatorio *
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <label for="jerarquia" class="col-form-label">Jerarquia:</label>
+              <input type="text" id="jerarquia" placeholder="Seleccionar Jerarquia" formControlName="jerarquia"
+                class="form-control" [matAutocomplete]="auto" (input)="onInputValueChangedJerarquia($event)">
+              <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayJerarquia"
+                (optionSelected)="onOptionSelectedJerarquia($event)">
+                <mat-option *ngFor="let jerarquia of filteredJerarquia | async" [value]="jerarquia">
+                  {{jerarquia.nombre}}
+                </mat-option>
+              </mat-autocomplete>
+            </div>
+            <div class="col-md-6">
+              <label for="dependenciaPadre" class="col-form-label">Dependencia Padre:</label>
+              <input type="text" id="dependenciaPadre" placeholder="Seleccionar Dependencia"
+                formControlName="dependenciaPadre" class="form-control" [matAutocomplete]="autoDepPadre"
+                (input)="onInputValueChangedDependencia($event)">
+              <mat-autocomplete #autoDepPadre="matAutocomplete" [displayWith]="displayDependencia"
+                (optionSelected)="onOptionSelectedDepedencia($event)">
+                <mat-option *ngFor="let dependencia of filteredDependencia | async" [value]="dependencia">
+                  {{dependencia.nombre}}
+                </mat-option>
+              </mat-autocomplete>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <label for="codigoCircuitoSubcircuito" class="col-form-label">Cod. Circuito-SubCircuito:</label>
+              <input type="text" class="form-control" id="codigoCircuitoSubcircuito" formControlName="codigoCircuitoSubcircuito">
+            </div>
+          </div>
+          <input id="eliminado" name="eliminado" type="hidden" formControlName="eliminado" value="N">
+        </form>
+      </div>
+    </div>
+  </div>
+  <app-modal-footer (agregar)="agregar()" (close)="close($event)"></app-modal-footer>
+</div>

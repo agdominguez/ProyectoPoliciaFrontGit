@@ -1,0 +1,128 @@
+<div class="style">
+  <app-modal-header [titulo]="titulo" (dismiss)="dismiss()"></app-modal-header>
+  <div class="modal-body">
+    <div class="container">
+      <div class="modal-body">
+        <form [formGroup]="formulario">
+          <div class="row">
+            <div class="col-md-6">
+              <label for="tipoVehiculo" class="col-form-label">Tipo Vehiculo:</label>
+              <input type="text" id="tipoVehiculo" placeholder="Seleccionar Tipo" formControlName="tipoVehiculo"
+                class="form-control" [matAutocomplete]="auto" (input)="onInputValueChangedTipoVehiculo($event)">
+              <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayTipoVehiculo"
+                (optionSelected)="onOptionSelectedTipoVehiculo($event)">
+                <mat-option *ngFor="let tipoVehiculo of filteredTipoVehiculo | async" [value]="tipoVehiculo">
+                  {{tipoVehiculo.tipo}}
+                </mat-option>
+              </mat-autocomplete>
+            </div>
+            <div class="col-md-6">
+              <label for="placa" class="col-form-label">Placa:</label>
+              <input type="text" class="form-control" id="placa" formControlName="placa">
+              <div
+                *ngIf="formulario?.get('placa')?.invalid && (formulario?.get('placa')?.dirty || formulario?.get('placa')?.touched)">
+                <div *ngIf="formulario?.get('placa')?.hasError('required')" class="text-danger font-weight-bold">
+                  El placa es requerido.
+                </div>
+                <div *ngIf="formulario?.get('placa')?.hasError('hasSymbols')" class="text-danger font-weight-bold">
+                  El placa no puede contener símbolos.</div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <label for="chasis" class="col-form-label">Chasis:</label>
+              <input type="text" class="form-control" id="chasis" formControlName="chasis">
+              <div
+                *ngIf="formulario?.get('chasis')?.invalid && (formulario?.get('chasis')?.dirty || formulario?.get('chasis')?.touched)">
+                <div *ngIf="formulario?.get('chasis')?.hasError('required')" class="text-danger font-weight-bold">
+                  El placa es requerido.
+                </div>
+                <div *ngIf="formulario?.get('chasis')?.hasError('hasSymbols')" class="text-danger font-weight-bold">
+                  El placa no puede contener símbolos.</div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label for="marca" class="col-form-label">Marca:</label>
+              <input type="text" class="form-control" id="marca" formControlName="marca">
+              <div
+                *ngIf="formulario?.get('marca')?.invalid && (formulario?.get('marca')?.dirty || formulario?.get('marca')?.touched)">
+                <div *ngIf="formulario?.get('marca')?.hasError('required')" class="text-danger font-weight-bold">
+                  Campo Obligatorio*
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <label for="modelo" class="col-form-label">Modelo:</label>
+              <input type="text" class="form-control" id="modelo" formControlName="modelo">
+              <div
+                *ngIf="formulario?.get('modelo')?.invalid && (formulario?.get('modelo')?.dirty || formulario?.get('modelo')?.touched)">
+                <div *ngIf="formulario?.get('modelo')?.hasError('required')" class="text-danger font-weight-bold">
+                  Campo Obligatorio*
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label for="motor" class="col-form-label">Motor:</label>
+              <input type="number" class="form-control" id="motor" formControlName="motor">
+              <div
+                *ngIf="formulario?.get('motor')?.invalid && (formulario?.get('motor')?.dirty || formulario?.get('motor')?.touched)">
+                <div *ngIf="formulario?.get('motor')?.hasError('required')" class="text-danger font-weight-bold">
+                  Campo Obligatorio*
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label for="kilometraje" class="col-form-label">Kilometraje:</label>
+              <input type="number" class="form-control" id="kilometraje" formControlName="kilometraje">
+              <div
+                *ngIf="formulario?.get('kilometraje')?.invalid && (formulario?.get('kilometraje')?.dirty || formulario?.get('kilometraje')?.touched)">
+                <div *ngIf="formulario?.get('kilometraje')?.hasError('required')" class="text-danger font-weight-bold">
+                  Campo Obligatorio*
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <label for="cilindraje" class="col-form-label">Cilindraje:</label>
+              <input type="number" class="form-control" id="cilindraje" formControlName="cilindraje">
+              <div
+                *ngIf="formulario?.get('cilindraje')?.invalid && (formulario?.get('cilindraje')?.dirty || formulario?.get('cilindraje')?.touched)">
+                <div *ngIf="formulario?.get('cilindraje')?.hasError('required')" class="text-danger font-weight-bold">
+                  Campo Obligatorio*
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label for="capacidadCarga" class="col-form-label">Carga:</label>
+              <input type="number" class="form-control" id="capacidadCarga" formControlName="capacidadCarga">
+              <div
+                *ngIf="formulario?.get('capacidadCarga')?.invalid && (formulario?.get('capacidadCarga')?.dirty || formulario?.get('capacidadCarga')?.touched)">
+                <div *ngIf="formulario?.get('capacidadCarga')?.hasError('required')"
+                  class="text-danger font-weight-bold">
+                  Campo Obligatorio*
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label for="capacidadPasajeros" class="col-form-label">Pasajeros:</label>
+              <input type="number" class="form-control" id="capacidadPasajeros" formControlName="capacidadPasajeros">
+              <div
+                *ngIf="formulario?.get('capacidadPasajeros')?.invalid && (formulario?.get('capacidadPasajeros')?.dirty || formulario?.get('capacidadPasajeros')?.touched)">
+                <div *ngIf="formulario?.get('capacidadPasajeros')?.hasError('required')"
+                  class="text-danger font-weight-bold">
+                  Campo Obligatorio*
+                </div>
+              </div>
+            </div>
+          </div>
+          <input id="eliminado" name="eliminado" type="hidden" formControlName="eliminado" value="N">
+        </form>
+      </div>
+    </div>
+  </div>
+  <app-modal-footer (agregar)="agregar()" (close)="close($event)"></app-modal-footer>
+</div>

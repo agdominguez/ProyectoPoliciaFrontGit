@@ -1,0 +1,79 @@
+<div class="card">
+  <div class="card-header">
+    <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
+      <div class="text-left">
+        <div class="btn-group me-2">
+          <button class="btn btn-rounded btn-primary" (click)="openModal()" type="button">{{etiquetabtn}}</button>
+        </div>
+      </div>
+      <div class="input-group" >
+        <form class="d-flex" (submit)="searchList();">
+          <label for="searchValue" class="col-form-label me-2" style="margin-right: 10px;">Buscar:</label>
+          <input class="form-control me-2" type="search" id="searchValue" name="searchValue" [(ngModel)]="searchValue"
+            placeholder="Buscar" aria-label="Buscar" (input)="toUpperCase(); clearSearchField()"
+            (keypress)="onKeyPress($event)" style="margin-right: 10px;">
+          <button class="btn btn-primary" type="submit">Buscar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="card-body table-responsive p-3">
+    <table id="empresa" class="table table-bordered table-striped">
+      <thead>
+        <tr>
+          <th (click)="sortList('codigo')" class="sortable">
+            Código <i class="fas fa-sort-numeric-down"></i> <i class="fas fa-sort-numeric-up-alt"></i>
+          </th>
+          <th (click)="sortList('nombre')" class="sortable">
+            Nombre <i class="fas fa-sort-alpha-down"></i><i class="fas fa-sort-alpha-up-alt"></i>
+          </th>
+          <th (click)="sortList('siglas')" class="sortable">
+            Siglas <i class="fas fa-sort-alpha-down"></i><i class="fas fa-sort-alpha-up-alt"></i>
+          </th>
+          <th (click)="sortList('jerarquia.nombre')" class="sortable">
+            Chasis <i class="fas fa-sort-alpha-down"></i><i class="fas fa-sort-alpha-up-alt"></i>
+          </th>
+          <th (click)="sortList('dependenciaPadre.nombre')" class="sortable">
+            Dependencia Padre <i class="fas fa-sort-alpha-down"></i><i class="fas fa-sort-alpha-up-alt"></i>
+          </th>
+          <th (click)="sortList('codigoCircuitoSubcircuito')" class="sortable">
+            Circuito/SubCircuito <i class="fas fa-sort-alpha-down"></i><i class="fas fa-sort-alpha-up-alt"></i>
+          </th>
+          <th>Editar/Eliminar</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let dependencia of dependenciaList">
+          <td>{{ dependencia.codigo }}</td>
+          <td>{{ dependencia.nombre }}</td>
+          <td>{{ dependencia.siglas }}</td>
+          <td>{{ dependencia?.jerarquia?.nombre }}</td>
+          <td>{{ dependencia?.dependenciaPadre?.nombre }}</td>
+          <td>{{ dependencia?.codigoCircuitoSubcircuito }}</td>
+          <td class="project-actions text-right small">
+            <div class="dropdown">
+              <button class="btn btn-white" data-toggle="dropdown">
+                <i class="fa fa-ellipsis-v fa-sm"></i>
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <button class="dropdown-item" (click)="openModal(dependencia)">
+                  <i class="fas fa-pencil-alt">
+                  </i>
+                  Edit
+                </button>
+                <button class="dropdown-item" (click)="delete(dependencia)">
+                  <i class="fas fa-trash">
+                  </i>
+                  Delete
+                </button>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <app-paginator *ngIf="paginador" [paginador]="paginador" [nombre]="nombre" [url]="url"
+    (pageSizeChange)="onPageSizeChange($event)"></app-paginator>
+</div>
+

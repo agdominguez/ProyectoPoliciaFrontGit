@@ -1,0 +1,40 @@
+<div class="card-footer">
+  <div class="row mb-3">
+    <div class="col">
+      <ul *ngIf="paginas.length > 0" class="pagination justify-content-center">
+        <li class="page-item" *ngIf="paginador.number > 0">
+          <a class="page-link" [routerLink]="['/'+url+'/'+nombre+'/page', paginador.number-1]">
+            <i class="fas fa-angle-left"></i>
+            <span class="sr-only">Previous</span>
+          </a>
+        </li>
+        <li [ngClass]="paginador.first ? 'disabled page-item' : 'page-item'">
+          <a class="page-link" [routerLink]="['/'+url+'/'+nombre+'/page', 0]">Inicio</a>
+        </li>
+
+        <li *ngFor="let pagina of paginas" class="page-item"
+          [ngClass]="pagina - 1 === paginador.number ? 'active' : ''">
+          <span class="page-link" *ngIf="pagina - 1 === paginador.number">{{ pagina }}</span>
+          <a class="page-link" *ngIf="pagina - 1 !== paginador.number"
+            [routerLink]="['/'+url+'/'+nombre+'/page', pagina - 1]">{{ pagina }}</a>
+        </li>
+
+        <li [ngClass]="paginador.last ? 'disabled page-item' : 'page-item'">
+          <a class="page-link" [routerLink]="['/'+url+'/'+nombre+'/page', paginador.totalPages - 1]">Fin</a>
+        </li>
+
+        <li class="page-item" *ngIf="paginador.number < paginador.totalPages - 1">
+          <a class="page-link">
+            <i class="fas fa-angle-right" [routerLink]="['/'+url+'/'+nombre+'/page', paginador.number + 1]"></i>
+            <span class="sr-only">Next</span>
+          </a>
+        </li>
+        <li class="page-item" style="margin: 0 1%;">
+          <select id="pageSize" class="form-control custom-select" [(ngModel)]="pageSize" (change)="changePageSize()">
+            <option *ngFor="let option of pageSizeOptions" [value]="option">{{ option }}</option>
+          </select>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
