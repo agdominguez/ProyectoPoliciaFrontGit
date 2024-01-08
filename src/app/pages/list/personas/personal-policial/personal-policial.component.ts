@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { PersonalPolicial } from 'src/app/entities/personas/PersonalPolicial';
 import { ModalPersonalPolicialComponent } from 'src/app/pages/forms/forms-personas/modal-personal-policial/modal-personal-policial.component';
-import { ModalFlotaVehicularComponent } from 'src/app/pages/forms/modal-flota-vehicular/modal-flota-vehicular.component';
+import { ModalFlotaVehicularComponent } from 'src/app/pages/forms/forms-flotas/modal-flota-vehicular/modal-flota-vehicular.component';
 import { PersonalPolicialService } from 'src/app/services/services-personas/personal-policial.service';
 import Swal from 'sweetalert2';
 
@@ -155,7 +155,7 @@ export class PersonalPolicialComponent {
             this.personalPolicialList = this.personalPolicialList.filter(ec => ec !== personalPolicial);
             swalWithBootstrapButtons.fire(
               'Elemento eliminado',
-              `Elemento ${personalPolicial.codigo} marcado como eliminado con éxito.`,
+              `Elemento ${personalPolicial.nombreCompleto} marcado como eliminado con éxito.`,
               'success'
             );
           },
@@ -185,7 +185,7 @@ export class PersonalPolicialComponent {
     });
 
     if (personalPolicial != null)
-      //dialogRef.componentInstance.personalPolicial = personalPolicial;
+      dialogRef.componentInstance.personalPolicial = personalPolicial;
     dialogRef.afterClosed().subscribe({
       next: result => {
         console.info('Result:', result);

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatDialogRef } from '@angular/material/dialog';
@@ -6,8 +6,8 @@ import { Observable, Subscription, map, of } from 'rxjs';
 import { FlotaVehicular } from 'src/app/entities/flotas/FlotaVehicular';
 import { TipoVehiculo } from 'src/app/entities/flotas/TipoVehiculo';
 import { CommonUtilsModal } from 'src/app/generics_methods/CommonUtilsModal';
-import { FlotaVehicularService } from 'src/app/services/flota-vehicular.service';
-import { TipoVehiculoService } from 'src/app/services/tipo-vehiculo.service';
+import { FlotaVehicularService } from 'src/app/services/services-flotas/flota-vehicular.service';
+import { TipoVehiculoService } from 'src/app/services/services-flotas/tipo-vehiculo.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -15,7 +15,7 @@ import Swal from 'sweetalert2';
   templateUrl: './modal-flota-vehicular.component.html',
   styleUrls: ['./modal-flota-vehicular.component.css']
 })
-export class ModalFlotaVehicularComponent {
+export class ModalFlotaVehicularComponent implements OnInit {
 
   control = new FormControl('');
 
@@ -89,21 +89,51 @@ export class ModalFlotaVehicularComponent {
 
     this.formulario = this.formBuilder.group({
       codigo: [this.flotaVehicular?.codigo || -1],
-      tipoVehiculo: [this.flotaVehicular.tipoVehiculo || ''],
+      tipoVehiculo: [this.flotaVehicular.tipoVehiculo || '',
+      [Validators.required,
+      CommonUtilsModal.validatorDDL('tipo')
+      ]],
       placa: [
         this.flotaVehicular?.placa || '',
         [Validators.required,
         this.transformToUppercaseValidator(),
         this.noSymbolsValidator()
         ]],
-      chasis: [this.flotaVehicular?.chasis || '', this.flotaVehicular?.placa || ''],
-      marca: [this.flotaVehicular?.marca || ''],
-      modelo: [this.flotaVehicular?.modelo || ''],
-      motor: [this.flotaVehicular?.motor || ''],
-      kilometraje: [this.flotaVehicular?.kilometraje || 0],
-      cilindraje: [this.flotaVehicular?.cilindraje || 0],
-      capacidadCarga: [this.flotaVehicular?.capacidadCarga || 0],
-      capacidadPasajeros: [this.flotaVehicular?.capacidadPasajeros || 0],
+      chasis: [this.flotaVehicular?.chasis || '',
+      [Validators.required,
+      this.transformToUppercaseValidator(),
+      this.noSymbolsValidator()
+      ]],
+      marca: [this.flotaVehicular?.marca || '',
+      [Validators.required,
+      this.transformToUppercaseValidator(),
+      this.noSymbolsValidator()
+      ]],
+      modelo: [this.flotaVehicular?.modelo || '',
+      [Validators.required,
+      this.transformToUppercaseValidator()
+      ]],
+      motor: [this.flotaVehicular?.motor || '',
+      [Validators.required,
+      this.transformToUppercaseValidator(),
+      this.noSymbolsValidator()
+      ]],
+      kilometraje: [this.flotaVehicular?.kilometraje || 0,
+      [Validators.required,
+      this.mayorA0Validator
+      ]],
+      cilindraje: [this.flotaVehicular?.cilindraje || 0,
+      [Validators.required,
+      this.mayorA0Validator
+      ]],
+      capacidadCarga: [this.flotaVehicular?.capacidadCarga || 0,
+      [Validators.required,
+      this.mayorA0Validator
+      ]],
+      capacidadPasajeros: [this.flotaVehicular?.capacidadPasajeros || 0,
+      [Validators.required,
+      this.mayorA0Validator
+      ]],
       fechaIngreso: new Date().toISOString(),
       eliminado: [this.flotaVehicular?.eliminado || 'N']
     });
@@ -231,6 +261,16 @@ export class ModalFlotaVehicularComponent {
     };
   }
 
+  private mayorA0Validator(control: AbstractControl): { [key: string]: any } | null {
+    const value = control.value;
+
+    if (value !== null && value !== undefined && value <= 10) {
+      return { 'mayorA0Validator': true };
+    }
+
+    return null;
+  }
+
   /**
 * Evento que se dispara cuando el valor del campo de autocompletado cambia.
 * @param event Evento de cambio del campo de autocompletado.
@@ -260,13 +300,13 @@ export class ModalFlotaVehicularComponent {
     return CommonUtilsModal.filterEntitiesByName(this.listTipoVehiculo, 'tipo', value);
   }
 
-    /**
- * Evento que se dispara cuando se selecciona una opción del campo de autocompletado.
- * @param event Evento de selección de autocompletado.
- */
-    onOptionSelectedTipoVehiculo(event: MatAutocompleteSelectedEvent): void {
-      const selectedTipo = event.option.value as TipoVehiculo;
-      this.control.setValue(selectedTipo.tipo);
-    }
+  /**
+* Evento que se dispara cuando se selecciona una opción del campo de autocompletado.
+* @param event Evento de selección de autocompletado.
+*/
+  onOptionSelectedTipoVehiculo(event: MatAutocompleteSelectedEvent): void {
+    const selectedTipo = event.option.value as TipoVehiculo;
+    this.control.setValue(selectedTipo.tipo);
+  }
 
 }

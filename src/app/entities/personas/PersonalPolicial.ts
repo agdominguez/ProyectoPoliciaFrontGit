@@ -1,4 +1,6 @@
+import { Dependencia } from "../dependencias/dependencia";
 import { RangoPolicial } from "./RangoPolicial";
+import { TipoSangre } from "./TipoSangre";
 
 export class PersonalPolicial {
 
@@ -6,8 +8,8 @@ export class PersonalPolicial {
   identificacion!: string;
   nombreCompleto!: string;
   fechaNacimiento!: Date;
-  tipoSangre!: string;
-  ciudadNacimiento!: string;
+  tipoSangre!: TipoSangre;
+  ciudadNacimiento!: Dependencia;
   telefonoCelular!: string;
   fechaIngreso!: Date;
   eliminado!: string;

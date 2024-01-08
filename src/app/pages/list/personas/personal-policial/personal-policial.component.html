@@ -21,47 +21,47 @@
     <table id="empresa" class="table table-bordered table-striped">
       <thead>
         <tr>
-          <th (click)="sortList('codigo')" class="sortable">
+          <!-- <th (click)="sortList('codigo')" class="sortable">
             Código <i class="fas fa-sort-numeric-down"></i> <i class="fas fa-sort-numeric-up-alt"></i>
-          </th>
+          </th> -->
           <th (click)="sortList('identificacion')" class="sortable">
             Identificación <i class="fas fa-sort-alpha-down"></i><i class="fas fa-sort-alpha-up-alt"></i>
           </th>
           <th (click)="sortList('nombreCompleto')" class="sortable">
-            Placa <i class="fas fa-sort-alpha-down"></i><i class="fas fa-sort-alpha-up-alt"></i>
+            Nombre Completo <i class="fas fa-sort-alpha-down"></i><i class="fas fa-sort-alpha-up-alt"></i>
           </th>
           <th (click)="sortList('fechaNacimiento')" class="sortable">
             Fecha Nacimiento <i class="fas fa-sort-alpha-down"></i><i class="fas fa-sort-alpha-up-alt"></i>
           </th>
-          <th (click)="sortList('marca')" class="sortable">
+          <th (click)="sortList('tipoSangre')" class="sortable">
             Tipo Sangre <i class="fas fa-sort-alpha-down"></i><i class="fas fa-sort-alpha-up-alt"></i>
           </th>
-          <th (click)="sortList('modelo')" class="sortable">
+          <th (click)="sortList('ciudadNacimiento.nombre')" class="sortable">
             Ciudad Nacimiento <i class="fas fa-sort-alpha-down"></i><i class="fas fa-sort-alpha-up-alt"></i>
           </th>
-          <th (click)="sortList('motor')" class="sortable">
+          <th (click)="sortList('telefonoCelular')" class="sortable">
             Telefono Celular <i class="fas fa-sort-alpha-down"></i><i class="fas fa-sort-alpha-up-alt"></i>
           </th>
-          <th (click)="sortList('kilometraje')" class="sortable">
+          <th (click)="sortList('rango.nombreRango')" class="sortable">
             Rango <i class="fas fa-sort-numeric-down"></i> <i class="fas fa-sort-numeric-up-alt"></i>
           </th>
-          <th (click)="sortList('cilindraje')" class="sortable">
+          <!-- <th (click)="sortList('fechaIngreso')" class="sortable">
             Fecha Ingreso <i class="fas fa-sort-numeric-down"></i> <i class="fas fa-sort-alpha-up-alt"></i>
-          </th>
+          </th> -->
           <th>Editar/Eliminar</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let personalPolicial of personalPolicialList">
-          <td>{{ personalPolicial.codigo }}</td>
+          <!-- <td>{{ personalPolicial.codigo }}</td> -->
           <td>{{ personalPolicial.identificacion}}</td>
           <td>{{ personalPolicial.nombreCompleto}}</td>
           <td>{{ personalPolicial.fechaNacimiento | date: 'dd/MM/yyyy'}}</td>
-          <td>{{ personalPolicial.tipoSangre}}</td>
-          <td>{{ personalPolicial.ciudadNacimiento}}</td>
+          <td>{{ personalPolicial.tipoSangre.nombre}}</td>
+          <td>{{ personalPolicial.ciudadNacimiento.nombre}}</td>
           <td>{{ personalPolicial.telefonoCelular}}</td>
           <td>{{ personalPolicial.rango.nombreRango}}</td>
-          <td>{{ personalPolicial.fechaIngreso | date: 'dd/MM/yyyy h:mm:ss a'}}</td>
+          <!-- <td>{{ personalPolicial.fechaIngreso | date: 'dd/MM/yyyy h:mm:ss a'}}</td> -->
           <td class="project-actions text-right small">
             <div class="dropdown">
               <button class="btn btn-white" data-toggle="dropdown">

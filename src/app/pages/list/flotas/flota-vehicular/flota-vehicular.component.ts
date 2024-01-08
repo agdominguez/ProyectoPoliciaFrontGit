@@ -1,25 +1,25 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { Dependencia } from 'src/app/entities/dependencias/dependencia';
-import { DependenciaService } from 'src/app/services/services-dependencias/dependencia.service';
+import { FlotaVehicular } from 'src/app/entities/flotas/FlotaVehicular';
+import { FlotaVehicularService } from 'src/app/services/services-flotas/flota-vehicular.service';
+import { MatDialog } from '@angular/material/dialog';
 import Swal from 'sweetalert2';
-import { ModalDependenciaComponent } from '../../forms/forms-dependencias/modal-dependencia/modal-dependencia.component';
+import { ModalFlotaVehicularComponent } from '../../../forms/forms-flotas/modal-flota-vehicular/modal-flota-vehicular.component';
 
 @Component({
-  selector: 'app-dependencias',
-  templateUrl: './dependencias.component.html',
-  styleUrls: ['./dependencias.component.css']
+  selector: 'app-flota-vehicular',
+  templateUrl: './flota-vehicular.component.html',
+  styleUrls: ['./flota-vehicular.component.css']
 })
-export class DependenciasComponent implements OnInit {
+export class FlotaVehicularComponent implements OnInit {
 
   page!: number;
   pageSize: number = 10;
-  dependenciaList!: Dependencia[];
+  flotaVehicularList!: FlotaVehicular[];
   paginador: any;
-  dependenciaSelect!: Dependencia;
-  nombre: string = 'dependencias';
+  flotaVehicularSelect!: FlotaVehicular;
+  nombre: string = 'flotaVehicular';
   etiquetabtn: string = '+ Crear Nuevo';
   searchValue: string = '';
   private subscriptions: Subscription[] = [];
@@ -30,7 +30,7 @@ export class DependenciasComponent implements OnInit {
 
   constructor(
     private dialog: MatDialog,
-    private dependenciaService: DependenciaService,
+    private flotaVehicularService: FlotaVehicularService,
     private activatedRoute: ActivatedRoute
   ) {
     this.url = this.activatedRoute.snapshot.parent?.url.join('/');
@@ -52,7 +52,7 @@ export class DependenciasComponent implements OnInit {
         this.page = 0;
       }
 
-      // Obtiene la lista de dependenciaList sin eliminar para la página actual
+      // Obtiene la lista de flotaVehicularList sin eliminar para la página actual
       this.obtenerListaNoEliminadaOrdenada(this.sortColumn, this.sortDirection);
     });
     this.subscriptions.push(sub);
@@ -71,10 +71,10 @@ export class DependenciasComponent implements OnInit {
    */
   obtenerListaNoEliminadaOrdenada(sortColumn: string, sortDirection: string): void {
     // Realiza una solicitud al servicio para obtener la lista de tiposTelefono no eliminados con ordenamiento
-    const sub: Subscription = this.dependenciaService.getNotDeletedOrdered(this.pageSize, this.page, sortColumn, sortDirection).subscribe({
+    const sub: Subscription = this.flotaVehicularService.getNotDeletedOrdered(this.pageSize, this.page, sortColumn, sortDirection).subscribe({
       next: (response: any) => {
         // Se procesa la respuesta y se actualiza el componente con los datos recibidos
-        this.dependenciaList = response.content as Dependencia[];
+        this.flotaVehicularList = response.content as FlotaVehicular[];
         this.paginador = response;
       },
       error: (error: any) => {
@@ -88,7 +88,7 @@ export class DependenciasComponent implements OnInit {
   }
 
   /**
-   * Método que realiza la búsqueda de dependenciaList según el término especificado.
+   * Método que realiza la búsqueda de flotaVehicularList según el término especificado.
    */
   searchList(): void {
     if (this.searchValue.trim() === '') {
@@ -97,10 +97,10 @@ export class DependenciasComponent implements OnInit {
     } else {
       // Si hay un término de búsqueda, realizar la búsqueda con el término especificado
       this.page = 0; // Establecer la página inicial para la búsqueda
-      const sub = this.dependenciaService.searchList(this.searchValue, this.page, this.pageSize).subscribe({
+      const sub = this.flotaVehicularService.searchList(this.searchValue, this.page, this.pageSize).subscribe({
         next: (response: any) => {
           // Se procesa la respuesta y se actualiza el componente con los datos recibidos
-          this.dependenciaList = response.content as Dependencia[];
+          this.flotaVehicularList = response.content as FlotaVehicular[];
           this.paginador = response;
         },
         error: (error: any) => {
@@ -125,11 +125,11 @@ export class DependenciasComponent implements OnInit {
   }
 
   /**
-   * Método que elimina una dependencia.
-   * @param dependencia La dependencia a eliminar.
+   * Método que elimina una flotaVehicular.
+   * @param flotaVehicular La flotaVehicular a eliminar.
    */
-  delete(dependencia: Dependencia): void {
-    // Muestra una alerta para confirmar la eliminación de la dependencia
+  delete(flotaVehicular: FlotaVehicular): void {
+    // Muestra una alerta para confirmar la eliminación de la flotaVehicular
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
         confirmButton: 'btn btn-success me-2',
@@ -140,7 +140,7 @@ export class DependenciasComponent implements OnInit {
 
     swalWithBootstrapButtons.fire({
       title: '¿Está seguro?',
-      text: `¿Está seguro que desea eliminar ${dependencia.nombre}?`,
+      text: `¿Está seguro que desea eliminar ${flotaVehicular.tipoVehiculo.tipo}?`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Sí, eliminar',
@@ -148,19 +148,19 @@ export class DependenciasComponent implements OnInit {
       reverseButtons: true
     }).then((result) => {
       if (result.isConfirmed) {
-        // Realiza una solicitud al servicio para marcar la dependencia como eliminada
-        const sub = this.dependenciaService.statusEliminado(dependencia.codigo).subscribe({
+        // Realiza una solicitud al servicio para marcar la flotaVehicular como eliminada
+        const sub = this.flotaVehicularService.statusEliminado(flotaVehicular.codigo).subscribe({
           next: response => {
-            // Si se elimina correctamente, se filtra la dependencia de la lista local
-            this.dependenciaList = this.dependenciaList.filter(ec => ec !== dependencia);
+            // Si se elimina correctamente, se filtra la flotaVehicular de la lista local
+            this.flotaVehicularList = this.flotaVehicularList.filter(ec => ec !== flotaVehicular);
             swalWithBootstrapButtons.fire(
               'Elemento eliminado',
-              `Elemento ${dependencia.codigo} marcado como eliminado con éxito.`,
+              `Elemento ${flotaVehicular.codigo} marcado como eliminado con éxito.`,
               'success'
             );
           },
           error: error => {
-            // Se maneja el error en caso de que ocurra algún problema al eliminar la dependencia
+            // Se maneja el error en caso de que ocurra algún problema al eliminar la flotaVehicular
             swalWithBootstrapButtons.fire(
               'Error',
               'Hubo un error al eliminar Elemento',
@@ -174,23 +174,23 @@ export class DependenciasComponent implements OnInit {
   }
 
   /**
-   * Método que abre el modal para crear o editar una dependencia.
-   * @param dependencia La dependencia a editar (opcional).
+   * Método que abre el modal para crear o editar una flotaVehicular.
+   * @param flotaVehicular La flotaVehicular a editar (opcional).
    */
-  public openModal(dependencia?: Dependencia): void {
-    // Abre el modal para crear o editar una dependencia
-    var dialogRef = this.dialog.open(ModalDependenciaComponent, {
+  public openModal(flotaVehicular?: FlotaVehicular): void {
+    // Abre el modal para crear o editar una flotaVehicular
+    var dialogRef = this.dialog.open(ModalFlotaVehicularComponent, {
       enterAnimationDuration: '1000ms',
       exitAnimationDuration: '1000ms',
     });
 
-    if (dependencia != null)
-      dialogRef.componentInstance.dependencia = dependencia;
+    if (flotaVehicular != null)
+      dialogRef.componentInstance.flotaVehicular = flotaVehicular;
     dialogRef.afterClosed().subscribe({
       next: result => {
         console.info('Result:', result);
         if (result) {
-          // Refresca el listado de dependenciaList después de crear o editar una dependencia
+          // Refresca el listado de flotaVehicularList después de crear o editar una flotaVehicular
           this.obtenerListaNoEliminadaOrdenada(this.sortColumn, this.sortDirection);
         }
       },
@@ -245,6 +245,5 @@ export class DependenciasComponent implements OnInit {
     // Realiza la llamada para obtener la lista actualizada con el nuevo tamaño de página
     this.obtenerListaNoEliminadaOrdenada(this.sortColumn, this.sortDirection);
   }
-
 
 }

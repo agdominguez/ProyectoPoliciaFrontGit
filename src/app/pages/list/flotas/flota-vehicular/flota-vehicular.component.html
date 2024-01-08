@@ -21,9 +21,9 @@
     <table id="empresa" class="table table-bordered table-striped">
       <thead>
         <tr>
-          <th (click)="sortList('codigo')" class="sortable">
+          <!-- <th (click)="sortList('codigo')" class="sortable">
             Código <i class="fas fa-sort-numeric-down"></i> <i class="fas fa-sort-numeric-up-alt"></i>
-          </th>
+          </th> -->
           <th (click)="sortList('tipoVehiculo.tipo')" class="sortable">
             Tipo <i class="fas fa-sort-alpha-down"></i><i class="fas fa-sort-alpha-up-alt"></i>
           </th>
@@ -59,7 +59,7 @@
       </thead>
       <tbody>
         <tr *ngFor="let flotaVehicular of flotaVehicularList">
-          <td>{{ flotaVehicular.codigo }}</td>
+          <!-- <td>{{ flotaVehicular.codigo }}</td> -->
           <td>{{ flotaVehicular.tipoVehiculo.tipo }}</td>
           <td>{{ flotaVehicular.placa }}</td>
           <td>{{ flotaVehicular.chasis }}</td>

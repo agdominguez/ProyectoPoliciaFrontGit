@@ -1,15 +1,15 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, catchError, map, tap } from 'rxjs';
+import { TipoSangre } from 'src/app/entities/personas/TipoSangre';
 import Swal from 'sweetalert2';
-import { TipoVehiculo } from '../entities/flotas/TipoVehiculo';
 
 @Injectable({
   providedIn: 'root'
 })
-export class TipoVehiculoService {
+export class TipoSangreService {
 
-  private urlEndPoint: string = 'http://localhost:8080/tipoVehiculo'
+  private urlEndPoint: string = 'http://localhost:8080/tipoSangre'
   private httpHeaders = new HttpHeaders({ 'content-Type': 'application/json' })
 
   constructor(
@@ -53,7 +53,7 @@ export class TipoVehiculoService {
     return this.http.get<any>(url).pipe(
       catchError(error => this.handleError(error)),
       tap((response: any) => {
-        (response.content as TipoVehiculo[]).forEach(tipoVehiculo => {
+        (response.content as TipoSangre[]).forEach(tipoSangre => {
         });
       })
     );
@@ -72,7 +72,7 @@ export class TipoVehiculoService {
     return this.http.get<any>(url).pipe(
       catchError(error => this.handleError(error)),
       tap((response: any) => {
-        (response.content as TipoVehiculo[]).forEach(tipoVehiculo => {
+        (response.content as TipoSangre[]).forEach(tipoSangre => {
         });
       })
     );
@@ -85,8 +85,8 @@ export class TipoVehiculoService {
   // de la lista de elementos en el formulario para editar.
   // *****************************************************
 
-  getElement(): Observable<TipoVehiculo[]> {
-    return this.http.get<TipoVehiculo[]>(this.urlEndPoint).pipe(
+  getElement(): Observable<TipoSangre[]> {
+    return this.http.get<TipoSangre[]>(this.urlEndPoint).pipe(
       catchError(error => this.handleError(error))
     );
   }
@@ -98,9 +98,9 @@ export class TipoVehiculoService {
   // base de datos.
   // *****************************************************
 
-  create(tipoVehiculo: TipoVehiculo): Observable<any> {
-    console.log(this.urlEndPoint, tipoVehiculo);
-    return this.http.post<any>(this.urlEndPoint, tipoVehiculo, { headers: this.httpHeaders }).pipe(
+  create(tipoSangre: TipoSangre): Observable<any> {
+    console.log(this.urlEndPoint, tipoSangre);
+    return this.http.post<any>(this.urlEndPoint, tipoSangre, { headers: this.httpHeaders }).pipe(
       catchError(error => this.handleError(error))
     );
   }
@@ -112,10 +112,10 @@ export class TipoVehiculoService {
   // la base de datos.
   // *****************************************************
 
-  update(tipoVehiculo: TipoVehiculo): Observable<TipoVehiculo> {
-    return this.http.put<any>(`${this.urlEndPoint}/${tipoVehiculo.codigo}`, tipoVehiculo, { headers: this.httpHeaders }).pipe(
+  update(tipoSangre: TipoSangre): Observable<TipoSangre> {
+    return this.http.put<any>(`${this.urlEndPoint}/${tipoSangre.codigo}`, tipoSangre, { headers: this.httpHeaders }).pipe(
       catchError(error => this.handleError(error)),
-      map((response: any) => response.elemento as TipoVehiculo)
+      map((response: any) => response.elemento as TipoSangre)
     );
   }
 
@@ -126,8 +126,8 @@ export class TipoVehiculoService {
   // un elmento de base de datos.
   // *****************************************************
 
-  delete(id: any): Observable<TipoVehiculo> {
-    return this.http.delete<TipoVehiculo>(`${this.urlEndPoint}/${id}`, { headers: this.httpHeaders }).pipe(
+  delete(id: any): Observable<TipoSangre> {
+    return this.http.delete<TipoSangre>(`${this.urlEndPoint}/${id}`, { headers: this.httpHeaders }).pipe(
       catchError(error => this.handleError(error))
     );
   }
@@ -145,7 +145,7 @@ export class TipoVehiculoService {
     return this.http.get<any>(`${this.urlEndPoint}/buscar`, { params }).pipe(
       catchError(error => this.handleError(error)),
       tap((response: any) => {
-        (response.content as TipoVehiculo[]).forEach(tipoVehiculo => {
+        (response.content as TipoSangre[]).forEach(tipoSangre => {
         });
       })
     );
@@ -169,8 +169,8 @@ export class TipoVehiculoService {
   /**
    * Método utilizado para obtener la lista completa de entidades para su uso en formularios.
    */
-  getElemtsform(): Observable<TipoVehiculo[]> {
-    return this.http.get<TipoVehiculo[]>(this.urlEndPoint + '/list').pipe(
+  getElemtsform(): Observable<TipoSangre[]> {
+    return this.http.get<TipoSangre[]>(this.urlEndPoint + '/list').pipe(
       catchError(error => this.handleError(error))
     );
   }
@@ -187,7 +187,7 @@ export class TipoVehiculoService {
     return this.http.get<any>(url, { params }).pipe(
       catchError(error => this.handleError(error)),
       tap((response: any) => {
-        (response.content as TipoVehiculo[]).forEach(apertura => {
+        (response.content as TipoSangre[]).forEach(apertura => {
           // Se puede realizar alguna operación con cada elemento de la lista si es necesario
         });
       })

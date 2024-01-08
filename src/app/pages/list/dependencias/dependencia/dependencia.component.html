@@ -21,9 +21,9 @@
     <table id="empresa" class="table table-bordered table-striped">
       <thead>
         <tr>
-          <th (click)="sortList('codigo')" class="sortable">
+          <!-- <th (click)="sortList('codigo')" class="sortable">
             Código <i class="fas fa-sort-numeric-down"></i> <i class="fas fa-sort-numeric-up-alt"></i>
-          </th>
+          </th> -->
           <th (click)="sortList('nombre')" class="sortable">
             Nombre <i class="fas fa-sort-alpha-down"></i><i class="fas fa-sort-alpha-up-alt"></i>
           </th>
@@ -31,7 +31,7 @@
             Siglas <i class="fas fa-sort-alpha-down"></i><i class="fas fa-sort-alpha-up-alt"></i>
           </th>
           <th (click)="sortList('jerarquia.nombre')" class="sortable">
-            Chasis <i class="fas fa-sort-alpha-down"></i><i class="fas fa-sort-alpha-up-alt"></i>
+            Jerarquia <i class="fas fa-sort-alpha-down"></i><i class="fas fa-sort-alpha-up-alt"></i>
           </th>
           <th (click)="sortList('dependenciaPadre.nombre')" class="sortable">
             Dependencia Padre <i class="fas fa-sort-alpha-down"></i><i class="fas fa-sort-alpha-up-alt"></i>
@@ -44,7 +44,7 @@
       </thead>
       <tbody>
         <tr *ngFor="let dependencia of dependenciaList">
-          <td>{{ dependencia.codigo }}</td>
+          <!-- <td>{{ dependencia.codigo }}</td> -->
           <td>{{ dependencia.nombre }}</td>
           <td>{{ dependencia.siglas }}</td>
           <td>{{ dependencia?.jerarquia?.nombre }}</td>

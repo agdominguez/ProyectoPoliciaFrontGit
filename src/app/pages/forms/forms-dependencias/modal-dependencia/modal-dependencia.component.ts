@@ -89,16 +89,22 @@ export class ModalDependenciaComponent {
 
     this.formulario = this.formBuilder.group({
       codigo: [this.dependencia?.codigo || -1],
-      nombre: [
-        this.dependencia?.nombre || '',
-        [Validators.required,
-        this.transformToUppercaseValidator(),
-        this.noSymbolsValidator()
-        ]],
-      siglas: [''],
-      jerarquia: [''],
-      dependenciaPadre: [''],
-      codigoCircuitoSubcircuito: [''],
+      nombre: [this.dependencia?.nombre || '',
+      [Validators.required,
+      this.transformToUppercaseValidator(),
+      //this.noSymbolsValidator()
+      ]],
+      siglas: [this.dependencia.siglas || '',
+      [Validators.required,
+      this.transformToUppercaseValidator(),
+      this.noSymbolsValidator()
+      ]],
+      jerarquia: [this.dependencia.jerarquia || '',
+      [Validators.required,
+      CommonUtilsModal.validatorDDL('nombre')
+      ]],
+      dependenciaPadre: [this.dependencia.dependenciaPadre || ''],
+      codigoCircuitoSubcircuito: [this.dependencia.codigoCircuitoSubcircuito || ''],
       eliminado: [this.dependencia?.eliminado || 'N']
     });
   }
@@ -157,7 +163,7 @@ export class ModalDependenciaComponent {
       {
         next: (json: any) => {
           this.dependencia.eliminado = "N";
-          Swal.fire('Nuevo Elemento', `${json.mensaje}: ${json.elemento.placa}`, 'success');
+          Swal.fire('Nuevo Elemento', `${json.mensaje}: ${json.elemento.nombre}`, 'success');
           this.dialogRef.close(true);
         },
         error: (err) => {
@@ -180,7 +186,7 @@ export class ModalDependenciaComponent {
       const sub = this.dependenciaService.update(this.formulario.value)
         .subscribe({
           next: elemento => {
-            Swal.fire('Elemento Actualizado', `Elemento ${elemento.codigo} actualizado con exito!`, 'success');
+            Swal.fire('Elemento Actualizado', `Elemento ${elemento.nombre} actualizado con exito!`, 'success');
             this.dialogRef.close(true);
           },
           error: err => {

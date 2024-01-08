@@ -4,34 +4,7 @@
     <div class="container">
       <div class="modal-body">
         <form [formGroup]="formulario">
-          <div class="row">
-            <div class="col-md-6">
-              <label for="nombre" class="col-form-label">Nombre:</label>
-              <input type="text" class="form-control" id="nombre" formControlName="nombre">
-              <div
-                *ngIf="formulario?.get('nombre')?.invalid && (formulario?.get('nombre')?.dirty || formulario?.get('nombre')?.touched)">
-                <div *ngIf="formulario?.get('nombre')?.hasError('required')" class="text-danger font-weight-bold" style="font-family:Arial, Helvetica, sans-serif; font-size: smaller;">
-                  Campo Obligatorio*
-                </div>
-                <div *ngIf="formulario?.get('nombre')?.hasError('hasSymbols')" class="text-danger font-weight-bold">
-                  Campo Obligatorio*
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <label for="siglas" class="col-form-label">Siglas:</label>
-              <input type="text" class="form-control" id="siglas" formControlName="siglas">
-              <div
-                *ngIf="formulario?.get('siglas')?.invalid && (formulario?.get('siglas')?.dirty || formulario?.get('siglas')?.touched)">
-                <div *ngIf="formulario?.get('siglas')?.hasError('required')" class="text-danger font-weight-bold">
-                  Campo Obligatorio *
-                </div>
-                <div *ngIf="formulario?.get('siglas')?.hasError('hasSymbols')" class="text-danger font-weight-bold">
-                  Campo Obligatorio *
-                </div>
-              </div>
-            </div>
-          </div>
+
           <div class="row">
             <div class="col-md-6">
               <label for="jerarquia" class="col-form-label">Jerarquia:</label>
@@ -43,6 +16,18 @@
                   {{jerarquia.nombre}}
                 </mat-option>
               </mat-autocomplete>
+              <div
+                *ngIf="formulario?.get('jerarquia')?.invalid && (formulario?.get('jerarquia')?.dirty || formulario?.get('jerarquia')?.touched)">
+                <div *ngIf="formulario?.get('jerarquia')?.hasError('required')"
+                  class="text-danger font-weight-bold error-message">
+                  La jerarquia es requerida*
+                </div>
+                <div
+                  *ngIf="formulario?.get('jerarquia')?.touched && formulario?.get('jerarquia')?.hasError('invalidParametro')"
+                  class="text-danger font-weight-bold error-message">
+                  Debe seleccionar la jerarquia.
+                </div>
+              </div>
             </div>
             <div class="col-md-6">
               <label for="dependenciaPadre" class="col-form-label">Dependencia Padre:</label>
@@ -59,8 +44,41 @@
           </div>
           <div class="row">
             <div class="col-md-6">
+              <label for="nombre" class="col-form-label">Nombre:</label>
+              <input type="text" class="form-control" id="nombre" formControlName="nombre">
+              <div
+                *ngIf="formulario?.get('nombre')?.invalid && (formulario?.get('nombre')?.dirty || formulario?.get('nombre')?.touched)">
+                <div *ngIf="formulario?.get('nombre')?.hasError('required')"
+                  class="text-danger font-weight-bold error-message">
+                  Campo Obligatorio*
+                </div>
+                <!-- <div *ngIf="formulario?.get('nombre')?.hasError('hasSymbols')"
+                  class="text-danger font-weight-bold error-message">
+                  El nombre no puede contener símbolos.
+                </div> -->
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label for="siglas" class="col-form-label">Siglas:</label>
+              <input type="text" class="form-control" id="siglas" formControlName="siglas">
+              <div
+                *ngIf="formulario?.get('siglas')?.invalid && (formulario?.get('siglas')?.dirty || formulario?.get('siglas')?.touched)">
+                <div *ngIf="formulario?.get('siglas')?.hasError('required')"
+                  class="text-danger font-weight-bold error-message">
+                  Campo Obligatorio *
+                </div>
+                <div *ngIf="formulario?.get('siglas')?.hasError('hasSymbols')"
+                  class="text-danger font-weight-bold error-message">
+                  Las siglas no puede contener símbolos.
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
               <label for="codigoCircuitoSubcircuito" class="col-form-label">Cod. Circuito-SubCircuito:</label>
-              <input type="text" class="form-control" id="codigoCircuitoSubcircuito" formControlName="codigoCircuitoSubcircuito">
+              <input type="text" class="form-control" id="codigoCircuitoSubcircuito"
+                formControlName="codigoCircuitoSubcircuito">
             </div>
           </div>
           <input id="eliminado" name="eliminado" type="hidden" formControlName="eliminado" value="N">

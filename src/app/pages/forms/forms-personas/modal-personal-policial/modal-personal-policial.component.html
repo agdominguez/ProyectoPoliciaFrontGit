@@ -1,1 +1,143 @@
-<p>modal-personal-policial works!</p>
+<div class="style">
+  <app-modal-header [titulo]="titulo" (dismiss)="dismiss()"></app-modal-header>
+  <div class="modal-body">
+    <div class="container">
+      <div class="modal-body">
+        <form [formGroup]="formulario">
+          <div class="row">
+            <div class="col-md-4">
+              <label for="identificacion" class="col-form-label">Identificación:</label>
+              <input type="text" class="form-control" maxlength="10" id="identificacion"
+                formControlName="identificacion" (keypress)="onKeyPress($event)">
+              <!-- Validación de errores -->
+              <div
+                *ngIf="formulario?.get('identificacion')?.invalid && (formulario?.get('identificacion')?.dirty || formulario?.get('identificacion')?.touched)">
+                <div *ngIf="formulario?.get('identificacion')?.hasError('required')"
+                  class="text-danger font-weight-bold error-message">
+                  La identificacion es requerida*
+                </div>
+                <div *ngIf="formulario.get('identificacion')?.hasError('invalidID')"
+                  class="text-danger font-weight-bold error-message">
+                  La cédula ingresada es inválida.
+                </div>
+                <div *ngIf="formulario.get('identificacion')?.hasError('minLengthID')"
+                  class="text-danger font-weight-bold error-message">
+                  El campo debe contener al menos 10 caracteres.
+                </div>
+              </div>
+            </div>
+            <div class="col-md-8">
+              <label for="nombreCompleto" class="col-form-label">Nombre Completo:</label>
+              <input type="text" class="form-control" id="nombreCompleto" formControlName="nombreCompleto">
+              <div
+                *ngIf="formulario?.get('nombreCompleto')?.invalid && (formulario?.get('nombreCompleto')?.dirty || formulario?.get('nombreCompleto')?.touched)">
+                <div *ngIf="formulario?.get('nombreCompleto')?.hasError('required')"
+                  class="text-danger font-weight-bold error-message">
+                  El nombre es requerido*
+                </div>
+                <div *ngIf="formulario?.get('nombreCompleto')?.hasError('hasSymbols')"
+                  class="text-danger font-weight-bold error-message">
+                  El nombre no puede contener símbolos.</div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <label for="rango" class="col-form-label">Rango Policial:</label>
+              <input type="text" id="rango" placeholder="Seleccionar rango" formControlName="rango" class="form-control"
+                [matAutocomplete]="auto" (input)="onInputValueChangedRango($event)">
+              <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayRango"
+                (optionSelected)="onOptionSelectedRango($event)">
+                <mat-option *ngFor="let rangoPolicial of filteredRangoPolicial | async" [value]="rangoPolicial">
+                  {{rangoPolicial.nombreRango}}
+                </mat-option>
+              </mat-autocomplete>
+              <div
+                *ngIf="formulario?.get('rango')?.invalid && (formulario?.get('rango')?.dirty || formulario?.get('rango')?.touched)">
+                <div *ngIf="formulario?.get('rango')?.hasError('required')"
+                  class="text-danger font-weight-bold error-message">
+                  El rango es requerido*
+                </div>
+                <div *ngIf="formulario?.get('rango')?.touched && formulario?.get('rango')?.hasError('invalidParametro')"
+                  class="text-danger font-weight-bold error-message">
+                  Debe seleccionar el rango.
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label for="tipoSangre" class="col-form-label">Tipo de Sangre:</label>
+              <input type="text" id="tipoSangre" placeholder="Seleccionar tipo" formControlName="tipoSangre"
+                class="form-control" [matAutocomplete]="autoTipo" (input)="onInputValueChangedTipoSangre($event)">
+              <mat-autocomplete #autoTipo="matAutocomplete" [displayWith]="displayTipoSangre"
+                (optionSelected)="onOptionSelectedTipoSangre($event)">
+                <mat-option *ngFor="let tipoSangre of filteredTipoSangre | async" [value]="tipoSangre">
+                  {{tipoSangre.nombre}}
+                </mat-option>
+              </mat-autocomplete>
+              <div
+                *ngIf="formulario?.get('tipoSangre')?.invalid && (formulario?.get('tipoSangre')?.dirty || formulario?.get('tipoSangre')?.touched)">
+                <div *ngIf="formulario?.get('tipoSangre')?.hasError('required')"
+                  class="text-danger font-weight-bold error-message">
+                  El tipo es requerido*
+                </div>
+                <div
+                  *ngIf="formulario?.get('tipoSangre')?.touched && formulario?.get('tipoSangre')?.hasError('invalidParametro')"
+                  class="text-danger font-weight-bold error-message">
+                  Debe seleccionar el tipo.
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label for="ciudadNacimiento" class="col-form-label">Ciudad Nacimiento:</label>
+              <input type="text" id="ciudadNacimiento" placeholder="Seleccionar ciudad"
+                formControlName="ciudadNacimiento" class="form-control" [matAutocomplete]="autoDep"
+                (input)="onInputValueChangedDepCiudad($event)">
+              <mat-autocomplete #autoDep="matAutocomplete" [displayWith]="displayDependencia"
+                (optionSelected)="onOptionSelectedDepCiudad($event)">
+                <mat-option *ngFor="let dependencia of filteredDependencia | async" [value]="dependencia">
+                  {{dependencia.nombre}}
+                </mat-option>
+              </mat-autocomplete>
+              <div
+                *ngIf="formulario?.get('ciudadNacimiento')?.invalid && (formulario?.get('ciudadNacimiento')?.dirty || formulario?.get('ciudadNacimiento')?.touched)">
+                <div *ngIf="formulario?.get('ciudadNacimiento')?.hasError('required')"
+                  class="text-danger font-weight-bold error-message">
+                  El campo es requerido*
+                </div>
+                <div
+                  *ngIf="formulario?.get('ciudadNacimiento')?.touched && formulario?.get('ciudadNacimiento')?.hasError('invalidParametro')"
+                  class="text-danger font-weight-bold error-message">
+                  Debe seleccionar la ciudad.
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <label for="telefonoCelular" class="col-form-label">Celular:</label>
+              <input type="text" class="form-control" id="telefonoCelular" formControlName="telefonoCelular"
+                (keypress)="onKeyPress($event)" maxlength="10">
+              <div
+                *ngIf="formulario?.get('telefonoCelular')?.invalid && (formulario?.get('telefonoCelular')?.dirty || formulario?.get('telefonoCelular')?.touched)">
+                <div *ngIf="formulario?.get('telefonoCelular')?.hasError('required')"
+                  class="text-danger font-weight-bold error-message">
+                  El celular es requerido*
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label for="fechaNacimiento" class="col-form-label">Fecha Nacimiento:</label>
+              <div class="d-flex">
+                <input class="form-control" matInput [matDatepicker]="picker" placeholder="dd/mm/yyyy"
+                  id="fechaNacimiento" formControlName="fechaNacimiento" />
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <app-modal-footer (agregar)="agregar()" (close)="close($event)"></app-modal-footer>
+</div>

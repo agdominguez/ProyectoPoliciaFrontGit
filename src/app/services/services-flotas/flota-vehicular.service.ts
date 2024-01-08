@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, catchError, map, tap } from 'rxjs';
-import { FlotaVehicular } from '../entities/flotas/FlotaVehicular';
+import { FlotaVehicular } from '../../entities/flotas/FlotaVehicular';
 import Swal from 'sweetalert2';
 
 @Injectable({
