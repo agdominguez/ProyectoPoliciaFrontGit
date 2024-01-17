@@ -175,6 +175,14 @@ export class DependenciaService {
     );
   }
   /**
+   * Método utilizado para obtener la lista completa de entidades para su uso en formularios.
+   */
+  getElemtsformPublic(): Observable<Dependencia[]> {
+    return this.http.get<Dependencia[]>(this.urlEndPoint + '/listado').pipe(
+      catchError(error => this.handleError(error))
+    );
+  }
+  /**
    * Método utilizado para obtener la lista de entidades que no han sido eliminadas mediante paginación y agrega un ordenamiento.
    */
   getNotDeletedOrdered(pageSize: number, page: number, sortColumn: string, sortDirection: string): Observable<any> {

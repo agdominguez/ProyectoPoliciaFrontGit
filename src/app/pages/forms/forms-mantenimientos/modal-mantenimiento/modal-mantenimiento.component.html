@@ -1,0 +1,106 @@
+<div class="style">
+  <app-modal-header [titulo]="titulo" (dismiss)="dismiss()"></app-modal-header>
+  <div class="modal-body">
+    <div class="container">
+      <div class="modal-body">
+        <form [formGroup]="formulario">
+          <div class="row">
+            <div class="col-md-4">
+              <label for="solicitud" class="col-form-label">Nro.Solicitud:</label>
+              <input type="text" id="solicitud" placeholder="Ingresar solicitud" formControlName="solicitud"
+                class="form-control" [matAutocomplete]="autoFlota" (input)="onInputValueChangedSolicitud($event)">
+              <mat-autocomplete #autoFlota="matAutocomplete" [displayWith]="displaySolicitud"
+                (optionSelected)="onOptionSelectedSolicitud($event)">
+                <mat-option *ngFor="let solicitud of filteredSolicitud | async" [value]="solicitud">
+                  {{solicitud.codigo}}
+                </mat-option>
+              </mat-autocomplete>
+            </div>
+            <div class="col-md-4">
+              <label for="kilometrajeActual" class="col-form-label">Kilometraje Actual:</label>
+              <input type="text" class="form-control" maxlength="10" id="kilometrajeActual"
+                formControlName="kilometrajeActual">
+            </div>
+            <div class="col-md-4">
+              <label for="tipoVehiculo" class="col-form-label">Tipo Vehiculo:</label>
+              <input type="text" class="form-control" id="tipoVehiculo" formControlName="tipoVehiculo">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <label for="placa" class="col-form-label">Placa:</label>
+              <input type="text" class="form-control" id="placa" formControlName="placa">
+            </div>
+            <div class="col-md-4">
+              <label for="marca" class="col-form-label">Marca:</label>
+              <input type="text" class="form-control" id="marca" formControlName="marca">
+            </div>
+            <div class="col-md-4">
+              <label for="modelo" class="col-form-label">Modelo:</label>
+              <input type="text" class="form-control" id="modelo" formControlName="modelo">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <label for="identificacion" class="col-form-label">Identificacion:</label>
+              <input type="text" class="form-control" id="identificacion" formControlName="identificacion">
+            </div>
+            <div class="col-md-8">
+              <label for="nombreCompleto" class="col-form-label">Responsable:</label>
+              <input type="text" class="form-control" id="nombreCompleto" formControlName="nombreCompleto">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <label for="asunto" class="col-form-label">Asunto:</label>
+              <textarea type="text" class="form-control" id="asunto" formControlName="asunto"></textarea>
+            </div>
+            <div class="col-md-6">
+              <label for="detalle" class="col-form-label">Detalle:</label>
+              <textarea type="text" class="form-control" id="detalle" formControlName="detalle"></textarea>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <label>Mantenimientos:</label>
+              <mat-selection-list #matList (selectionChange)="onChangeMantenimiento($event)">
+                <!-- Opciones individuales -->
+                <mat-list-option color="primary" *ngFor="let item of listTipoMantenimiento" [value]="item">
+                  <span matTooltip="{{item.descripcion}}" matTooltipPosition="right">{{ item.nombre }}</span>
+                </mat-list-option>
+              </mat-selection-list>
+            </div>
+            <div class="card-body table-responsive p-3">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>
+                      SUBTOTAL
+                    </th>
+                    <th>
+                      IVA
+                    </th>
+                    <th>
+                      TOTAL
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let valor of listValor">
+                    <td>{{ valor.costo | number:'1.2-2'}}</td>
+                    <td>{{ valor.tipoContrato.iva }}%</td>
+                </tbody>
+              </table>
+            </div>
+            <!-- <div class="col-md-8">
+              <label for="tipoMantenimiento" class="col-form-label">Tipo Mantenimiento:</label>
+              <input type="text" class="form-control" maxlength="10" id="tipoMantenimiento"
+                formControlName="tipoMantenimiento">
+            </div> -->
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <app-modal-footer (agregar)="agregar()" (close)="close($event)"></app-modal-footer>
+</div>

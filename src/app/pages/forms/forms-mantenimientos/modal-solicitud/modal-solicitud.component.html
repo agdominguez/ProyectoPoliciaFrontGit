@@ -1,0 +1,79 @@
+<div class="style">
+  <app-modal-header [titulo]="titulo" (dismiss)="dismiss()"></app-modal-header>
+  <div class="modal-body">
+    <div class="container">
+      <div class="modal-body">
+        <form [formGroup]="formulario">
+          <div class="row">
+            <div class="col-md-12">
+              <label for="vinculacion" class="col-form-label">Busqueda:</label>
+              <input type="text" id="vinculacion" placeholder="Buscar" formControlName="vinculacion"
+                class="form-control" [matAutocomplete]="auto" (input)="onInputValueChangedVinculacion($event)">
+              <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayVinculacion"
+                (optionSelected)="onOptionSelectedVinculacion($event)">
+                <mat-option *ngFor="let vinculacion of filteredVinculacion | async" [value]="vinculacion">
+                  {{vinculacion.vinculacionPersonal.personalPolicial.identificacion}} -
+                  {{vinculacion.vinculacionPersonal.personalPolicial.nombreCompleto}}
+                </mat-option>
+              </mat-autocomplete>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <label for="vinculacionFlota" class="col-form-label">Vehiculos:</label>
+              <input type="text" id="vinculacionFlota" placeholder="Buscar" formControlName="vinculacionFlota"
+                class="form-control" [matAutocomplete]="autoFlota"
+                (input)="onInputValueChangedVinculacionFlota($event)">
+              <mat-autocomplete #autoFlota="matAutocomplete" [displayWith]="displayVinculacionFlota"
+                (optionSelected)="onOptionSelectedVinculacionFlota($event)">
+                <mat-option *ngFor="let vinculacion of filteredVinculacioFlota | async" [value]="vinculacion">
+                  {{vinculacion.vinculacionFlota.flotaVehicular.placa}} -
+                  {{vinculacion.vinculacionFlota.flotaVehicular.tipoVehiculo.tipo}} -
+                  {{vinculacion.vinculacionFlota.flotaVehicular.marca}}
+                </mat-option>
+              </mat-autocomplete>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-3">
+              <label for="distrito" class="col-form-label">Distrito:</label>
+              <input type="text" class="form-control" id="distrito" formControlName="distrito" readonly>
+            </div>
+            <div class="col-md-3">
+              <label for="parroquia" class="col-form-label">Parroquia:</label>
+              <input type="text" class="form-control" id="parroquia" formControlName="parroquia" readonly>
+            </div>
+            <div class="col-md-3">
+              <label for="circuito" class="col-form-label">Circuito:</label>
+              <input type="text" class="form-control" id="circuito" formControlName="circuito" readonly>
+            </div>
+            <div class="col-md-3">
+              <label for="subcircuito" class="col-form-label">Subcircuito:</label>
+              <input type="text" class="form-control" id="subcircuito" formControlName="subcircuito" readonly>
+            </div>
+          </div>
+          <div class="row">
+            <div class="row">
+              <div class="col-md-6">
+                <label for="kilometrajeActual" class="col-form-label">Kilometraje Actual:</label>
+                <input type="number" class="form-control" id="kilometrajeActual" formControlName="kilometrajeActual">
+              </div>
+              <div class="col-md-6">
+                <label for="observacion" class="col-form-label">Observaciones:</label>
+                <input type="text" class="form-control" id="observacion" formControlName="observacion">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-8 text-center">
+              <label for="fechaReserva" class="col-form-label">Fecha Reserva Mantenimiento:</label>
+              <mat-card class="demo-inline-calendar-card">
+                <mat-calendar [(selected)]="selected"></mat-calendar>
+              </mat-card>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <app-modal-footer (agregar)="agregar()" (close)="close($event)"></app-modal-footer>
+  </div>

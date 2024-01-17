@@ -180,6 +180,7 @@ export class DependenciaComponent implements OnInit {
   public openModal(dependencia?: Dependencia): void {
     // Abre el modal para crear o editar una dependencia
     var dialogRef = this.dialog.open(ModalDependenciaComponent, {
+      width:'50%',
       enterAnimationDuration: '1000ms',
       exitAnimationDuration: '1000ms',
     });
@@ -245,6 +246,4 @@ export class DependenciaComponent implements OnInit {
     // Realiza la llamada para obtener la lista actualizada con el nuevo tamaño de página
     this.obtenerListaNoEliminadaOrdenada(this.sortColumn, this.sortDirection);
   }
-
-
 }

@@ -1,0 +1,131 @@
+<div class="style">
+  <div class="container d-flex justify-content-center align-items-center">
+    <form [formGroup]="reclamoForm" class="w-100">
+      <div class="row">
+        <div class="col-md-5">
+          <label for="circuito" class="col-form-label">Dependencia Padre:</label>
+          <input type="text" id="circuito" placeholder="Seleccionar circuito" formControlName="circuito"
+            class="form-control" [matAutocomplete]="autoDepPadre" (input)="onInputValueChangedDependencia($event)">
+          <mat-autocomplete #autoDepPadre="matAutocomplete" [displayWith]="displayDependencia"
+            (optionSelected)="onOptionSelectedDepedencia($event)">
+            <mat-option *ngFor="let dependencia of filteredDependencia | async" [value]="dependencia">
+              {{dependencia.nombre}}
+            </mat-option>
+          </mat-autocomplete>
+          <div
+            *ngIf="reclamoForm?.get('circuito')?.invalid && (reclamoForm?.get('circuito')?.dirty || reclamoForm?.get('circuito')?.touched)">
+            <div *ngIf="reclamoForm?.get('circuito')?.hasError('required')"
+              class="text-danger font-weight-bold error-message">
+              El campo es requerido*
+            </div>
+            <div
+              *ngIf="reclamoForm?.get('circuito')?.touched && reclamoForm?.get('circuito')?.hasError('invalidParametro')"
+              class="text-danger font-weight-bold error-message">
+              Debe seleccionar el circuito.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-5">
+          <label for="subcircuito" class="col-form-label">SubCircuito:</label>
+          <input type="text" id="subcircuito" placeholder="Seleccionar subcircuito" class="form-control"
+            formControlName="subcircuito" [matAutocomplete]="auto3" (input)="onInputValueChangedSubCircuito($event)">
+          <mat-autocomplete #auto3="matAutocomplete" [displayWith]="displaySubCircuito"
+            (optionSelected)="onOptionSelectedSubCircuito($event)">
+            <mat-option *ngFor="let subCircuito of filteredSubCircuito | async" [value]="subCircuito">
+              {{subCircuito?.nombre}}
+            </mat-option>
+          </mat-autocomplete>
+          <div
+            *ngIf="reclamoForm?.get('subcircuito')?.invalid && (reclamoForm?.get('subcircuito')?.dirty || reclamoForm?.get('subcircuito')?.touched)">
+            <div *ngIf="reclamoForm?.get('circuito')?.hasError('required')"
+              class="text-danger font-weight-bold error-message">
+              El campo es requerido*
+            </div>
+            <div
+              *ngIf="reclamoForm?.get('subcircuito')?.touched && reclamoForm?.get('subcircuito')?.hasError('invalidParametro')"
+              class="text-danger font-weight-bold error-message">
+              Debe seleccionar el Subcircuito.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-5">
+          <label for="tipoReclamo" class="col-form-label">Tipo de Reclamo:</label>
+          <input type="text" id="tipoReclamo" placeholder="Seleccionar tipo" class="form-control"
+            formControlName="tipoReclamo" [matAutocomplete]="auto1" (input)="onInputValueChangedTipoReclamo($event)">
+          <mat-autocomplete #auto1="matAutocomplete" [displayWith]="displayTipoReclamo"
+            (optionSelected)="onOptionSelectedTipoReclamo($event)">
+            <mat-option *ngFor="let tipo of filteredTipoReclamo | async" [value]="tipo">
+              {{tipo?.nombre}}
+            </mat-option>
+          </mat-autocomplete>
+          <div
+            *ngIf="reclamoForm?.get('tipoReclamo')?.invalid && (reclamoForm?.get('tipoReclamo')?.dirty || reclamoForm?.get('tipoReclamo')?.touched)">
+            <div *ngIf="reclamoForm?.get('circuito')?.hasError('required')"
+              class="text-danger font-weight-bold error-message">
+              El campo es requerido*
+            </div>
+            <div
+              *ngIf="reclamoForm?.get('tipoReclamo')?.touched && reclamoForm?.get('tipoReclamo')?.hasError('invalidParametro')"
+              class="text-danger font-weight-bold error-message">
+              Debe seleccionar el tipo.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-5">
+          <label for="detalle" class="col-form-label">Detalle:</label>
+          <textarea id="detalle" formControlName="detalle" class="form-control"></textarea>
+          <div
+            *ngIf="reclamoForm?.get('detalle')?.invalid && (reclamoForm?.get('detalle')?.dirty || reclamoForm?.get('detalle')?.touched)">
+            <div *ngIf="reclamoForm?.get('detalle')?.hasError('required')"
+              class="text-danger font-weight-bold error-message">
+              El detalle es requerido*
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-5">
+          <label for="contacto" class="col-form-label">Contacto:</label>
+          <input type="number" maxlength="10" id="contacto" formControlName="contacto" class="form-control" />
+        </div>
+      </div>
+      <div class="row mb-4">
+        <div class="col-md-5">
+          <label for="apellidos" class="col-form-label">Apellidos:</label>
+          <input type="text" id="apellidos" formControlName="apellidos" class="form-control" />
+          <div
+            *ngIf="reclamoForm?.get('apellidos')?.invalid && (reclamoForm?.get('apellidos')?.dirty || reclamoForm?.get('apellidos')?.touched)">
+            <div *ngIf="reclamoForm?.get('apellidos')?.hasError('required')"
+              class="text-danger font-weight-bold error-message">
+              Los apellidos son requeridos*
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row mb-4">
+        <div class="col-md-5">
+          <label for="nombres" class="col-form-label">Nombres:</label>
+          <input type="text" id="nombres" formControlName="nombres" class="form-control" />
+          <div
+            *ngIf="reclamoForm?.get('nombres')?.invalid && (reclamoForm?.get('nombres')?.dirty || reclamoForm?.get('nombres')?.touched)">
+            <div *ngIf="reclamoForm?.get('nombres')?.hasError('required')"
+              class="text-danger font-weight-bold error-message">
+              Los nombres son requeridos*
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-3">
+          <button type="button" class="btn btn-primary" (click)="agregar()">Enviar</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

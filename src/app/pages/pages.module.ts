@@ -17,10 +17,23 @@ import { ModalDependenciaComponent } from './forms/forms-dependencias/modal-depe
 import { PersonalPolicialComponent } from './list/personas/personal-policial/personal-policial.component';
 import { ModalPersonalPolicialComponent } from './forms/forms-personas/modal-personal-policial/modal-personal-policial.component';
 import { MatDatepickerModule } from "@angular/material/datepicker";
-import { MatNativeDateModule } from '@angular/material/core';
+import { MatNativeDateModule, MatOptionModule } from '@angular/material/core';
 import { VinculacionFlotaSubCircuitoComponent } from './list/flotas/vinculacion-flota-sub-circuito/vinculacion-flota-sub-circuito.component';
-import { VinculacionPersonalSubCircuitoComponent } from './list/personas/vinculacion-personal-sub-circuito/vinculacion-personal-sub-circuito.component';
+import { VinculacionPersonalSubCircuitoComponent } from './list/dependencias/vinculacion-personal-sub-circuito/vinculacion-personal-sub-circuito.component';
 import { SolicitudComponent } from './list/mantenimientos/solicitud/solicitud.component';
+import { PrincipalComponent } from './principal/principal.component';
+import { ModalVinculacionPersonalSubcircuitoComponent } from './forms/forms-dependencias/modal-vinculacion-personal-subcircuito/modal-vinculacion-personal-subcircuito.component';
+import {MatListModule} from '@angular/material/list';
+import { ModalVinculacionFlotaSubcircuitoComponent } from './forms/forms-flotas/modal-vinculacion-flota-subcircuito/modal-vinculacion-flota-subcircuito.component';
+import { VinculacionComponent } from './list/mantenimientos/vinculacion/vinculacion.component';
+import { ModalVinculacionComponent } from './forms/forms-mantenimientos/modal-vinculacion/modal-vinculacion.component';
+import { ModalSolicitudComponent } from './forms/forms-mantenimientos/modal-solicitud/modal-solicitud.component';
+import { MatStepperModule } from '@angular/material/stepper';
+import {MatCardModule} from '@angular/material/card';
+import { MantenimientoComponent } from './list/mantenimientos/mantenimiento/mantenimiento.component';
+import { ModalMantenimientoComponent } from './forms/forms-mantenimientos/modal-mantenimiento/modal-mantenimiento.component';
+import {MatTooltipModule} from '@angular/material/tooltip';
+import { ReporteSugerenciaComponent } from './list/reportes/reporte-sugerencia/reporte-sugerencia.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +47,16 @@ import { SolicitudComponent } from './list/mantenimientos/solicitud/solicitud.co
     ModalPersonalPolicialComponent,
     VinculacionFlotaSubCircuitoComponent,
     VinculacionPersonalSubCircuitoComponent,
-    SolicitudComponent
+    SolicitudComponent,
+    PrincipalComponent,
+    ModalVinculacionPersonalSubcircuitoComponent,
+    ModalVinculacionFlotaSubcircuitoComponent,
+    VinculacionComponent,
+    ModalVinculacionComponent,
+    ModalSolicitudComponent,
+    MantenimientoComponent,
+    ModalMantenimientoComponent,
+    ReporteSugerenciaComponent
   ],
   exports:[
     DashboardComponent,
@@ -54,7 +76,12 @@ import { SolicitudComponent } from './list/mantenimientos/solicitud/solicitud.co
     MatAutocompleteModule,
     BrowserAnimationsModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    MatListModule,
+    MatOptionModule,
+    MatStepperModule,
+    MatCardModule,
+    MatTooltipModule
   ]
 })
 export class PagesModule { }

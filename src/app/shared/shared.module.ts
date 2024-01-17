@@ -11,6 +11,7 @@ import { ModalFooterComponent } from './modal-footer/modal-footer.component';
 import { ModalHeaderComponent } from './modal-header/modal-header.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { MatTreeModule } from '@angular/material/tree';
 
 
 @NgModule({
@@ -38,7 +39,8 @@ import { MatButtonModule } from '@angular/material/button';
     FormsModule,
     MatIconModule,
     MatButtonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatTreeModule
   ]
 })
 export class SharedModule { }

@@ -92,7 +92,7 @@ export class ModalDependenciaComponent {
       nombre: [this.dependencia?.nombre || '',
       [Validators.required,
       this.transformToUppercaseValidator(),
-      //this.noSymbolsValidator()
+        //this.noSymbolsValidator()
       ]],
       siglas: [this.dependencia.siglas || '',
       [Validators.required,
@@ -116,6 +116,17 @@ export class ModalDependenciaComponent {
       this.filteredJerarquia = of(this.listJerarquiaDependencia).pipe(
         map(value => this.jerarquiaDependencia(''))
       );
+    });
+  }
+
+  setupDependencia(codigo: number): void {
+    this.dependenciaService.getElemtsform().subscribe(list => {
+
+      this.listDependencia = list;
+      const listDepedenciaPadre = this.listDependencia.filter(entity => entity.jerarquia.codigo == (codigo - 1));
+      this.listDependencia = listDepedenciaPadre;
+      this.filteredDependencia = of(this.listDependencia);
+      this.formulario.get('dependenciaPadre')?.setValue('');
     });
   }
 
@@ -268,21 +279,12 @@ export class ModalDependenciaComponent {
     const selectedJerarquia = event.option.value as JerarquiaDependencia;
     this.control.setValue(selectedJerarquia.nombre);
 
-    this.dependenciaService.getElemtsform().subscribe(list => {
-
-      this.listDependencia = list;
-      const listDepedenciaPadre = this.listDependencia
-        .filter(entity => entity.jerarquia.codigo == selectedJerarquia.codigo - 1);
-
-      this.listDependencia = listDepedenciaPadre;
-      this.filteredDependencia = of(this.listDependencia);
-      this.formulario.get('dependenciaPadre')?.setValue('');
-    });
+    this.setupDependencia(selectedJerarquia.codigo);
   }
   /**
-* Evento que se dispara cuando el valor del campo de autocompletado cambia.
-* @param event Evento de cambio del campo de autocompletado.
-*/
+  * Evento que se dispara cuando el valor del campo de autocompletado cambia.
+  * @param event Evento de cambio del campo de autocompletado.
+  */
   onInputValueChangedDependencia(event: Event): void {
     const inputText = (event.target as HTMLInputElement)?.value;
     const normalizedInput = inputText ? inputText.trim() : '';
@@ -309,9 +311,9 @@ export class ModalDependenciaComponent {
   }
 
   /**
-* Evento que se dispara cuando se selecciona una opción del campo de autocompletado.
-* @param event Evento de selección de autocompletado.
-*/
+  * Evento que se dispara cuando se selecciona una opción del campo de autocompletado.
+  * @param event Evento de selección de autocompletado.
+  */
   onOptionSelectedDepedencia(event: MatAutocompleteSelectedEvent): void {
     const selectedDepedenciaPadre = event.option.value as Dependencia;
     this.control.setValue(selectedDepedenciaPadre.nombre);

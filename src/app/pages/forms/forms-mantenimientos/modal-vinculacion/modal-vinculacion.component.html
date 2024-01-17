@@ -1,0 +1,84 @@
+<div class="style">
+  <app-modal-header [titulo]="titulo" (dismiss)="dismiss()"></app-modal-header>
+  <div class="modal-body">
+    <div class="container">
+      <div class="modal-body">
+        <form [formGroup]="formulario">
+          <div class="row mb-2">
+            <div class="col-md-3">
+              <label for="dependencia" class="col-form-label">Distrito:</label>
+              <input type="text" id="dependencia" placeholder="Seleccionar distrito" class="form-control"
+                formControlName="dependencia" [matAutocomplete]="auto" (input)="onInputValueChangedDependencia($event)">
+              <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayDependencia"
+                (optionSelected)="onOptionSelectedDepedencia($event)">
+                <mat-option *ngFor="let dependencia of filteredDependencia | async" [value]="dependencia">
+                  {{dependencia?.nombre}}
+                </mat-option>
+              </mat-autocomplete>
+            </div>
+            <div class="col-md-3">
+              <label for="dependencia1" class="col-form-label">Parroquia:</label>
+              <input type="text" id="dependencia1" placeholder="Seleccionar parroquia" class="form-control"
+                formControlName="dependencia1" [matAutocomplete]="auto1" (input)="onInputValueChangedParroquia($event)">
+              <mat-autocomplete #auto1="matAutocomplete" [displayWith]="displayParroquia"
+                (optionSelected)="onOptionSelectedParroquia($event)">
+                <mat-option *ngFor="let parroquia of filteredParroquia | async" [value]="parroquia">
+                  {{parroquia?.nombre}}
+                </mat-option>
+              </mat-autocomplete>
+            </div>
+            <div class="col-md-3">
+              <label for="dependencia2" class="col-form-label">Circuito:</label>
+              <input type="text" id="dependencia2" placeholder="Seleccionar circuito" class="form-control"
+                formControlName="dependencia2" [matAutocomplete]="auto2" (input)="onInputValueChangedCircuito($event)">
+              <mat-autocomplete #auto2="matAutocomplete" [displayWith]="displayCircuito"
+                (optionSelected)="onOptionSelectedCircuito($event)">
+                <mat-option *ngFor="let circuito of filteredCircuito | async" [value]="circuito">
+                  {{circuito?.nombre}}
+                </mat-option>
+              </mat-autocomplete>
+            </div>
+            <div class="col-md-3">
+              <label for="dependencia3" class="col-form-label">SubCircuito:</label>
+              <input type="text" id="dependencia3" placeholder="Seleccionar subcircuito" class="form-control"
+                formControlName="dependencia3" [matAutocomplete]="auto3" (input)="onInputValueChangedSubCircuito($event)">
+              <mat-autocomplete #auto3="matAutocomplete" [displayWith]="displaySubCircuito"
+                (optionSelected)="onOptionSelectedSubCircuito($event)">
+                <mat-option *ngFor="let subCircuito of filteredSubCircuito | async" [value]="subCircuito">
+                  {{subCircuito?.nombre}}
+                </mat-option>
+              </mat-autocomplete>
+            </div>
+          </div>
+          <div class="row mb-2">
+            <div class="col-md-12">
+              <label>Vehiculos:</label>
+              <div style="overflow-y: auto; max-height: 300px;" *ngIf="isVisible">
+                <mat-selection-list #matListFlota (selectionChange)="onSelectionChange($event)" formControlName="listFlota">
+                  <!-- Opciones individuales -->
+                  <mat-list-option color="primary" *ngFor="let item of listFAsociado" [value]="item">
+                    {{ item?.flotaVehicular?.placa }}
+                  </mat-list-option>
+                </mat-selection-list>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <label>Responsable:</label>
+              <div style="overflow-y: auto; max-height: 300px;" *ngIf="isVisible">
+                <mat-selection-list #matListPersonal (selectionChange)="onSelectionChangeFor4($event)" formControlName="listPersonal">
+                  <!-- Opciones individuales -->
+                  <mat-list-option color="primary" *ngFor="let item of listPAsociado" [value]="item">
+                    {{ item?.personalPolicial?.identificacion +' '+ item?.personalPolicial?.nombreCompleto }}
+                  </mat-list-option>
+                </mat-selection-list>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <app-modal-footer (agregar)="agregar()" (close)="close($event)"></app-modal-footer>
+</div>

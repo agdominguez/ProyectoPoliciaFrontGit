@@ -1,4 +1,7 @@
-import { Component } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Component, inject } from '@angular/core';
+import { AuthService } from 'src/app/authentication/auth.service';
+import { DependenciaService } from 'src/app/services/services-dependencias/dependencia.service';
 
 @Component({
   selector: 'app-header',
@@ -6,5 +9,4 @@ import { Component } from '@angular/core';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent {
-
 }

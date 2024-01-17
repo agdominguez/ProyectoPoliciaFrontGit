@@ -1,0 +1,43 @@
+<div class="style">
+  <app-modal-header [titulo]="titulo" (dismiss)="dismiss()"></app-modal-header>
+  <div class="modal-body">
+    <div class="container">
+      <div class="modal-body">
+
+        <div class="row">
+          <div class="col-md-12">
+            <label>Persona Policial:</label>
+            <div style="overflow-y: auto; max-height: 300px;">
+              <mat-selection-list #matList [disabled]="disabledMatSelection">
+                <!-- Opción para seleccionar todos -->
+                <mat-list-option color="primary" (click)="toggleSelectAll(matList)" *ngIf="isVisibleCheck">
+                  Todos
+                </mat-list-option>
+                <!-- Opciones individuales -->
+                <mat-list-option color="primary" *ngFor="let item of listFlota" [value]="item">
+                  {{ 'TIPO: '+ item.tipoVehiculo.tipo +' PLACA: '+ item.placa + ' MARCA: ' + item.marca }}
+                </mat-list-option>
+              </mat-selection-list>
+            </div>
+          </div>
+        </div>
+        <form [formGroup]="formulario">
+          <div class="row">
+            <div class="col-md-8">
+              <label for="dependencia" class="col-form-label">Sub-Circuito:</label>
+              <input type="text" id="dependencia" placeholder="Seleccionar subcircuito" class="form-control"
+                formControlName="dependencia" [matAutocomplete]="auto" (input)="onInputValueChangedDependencia($event)">
+              <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayDependencia"
+                (optionSelected)="onOptionSelectedDepedencia($event)">
+                <mat-option *ngFor="let dependencia of filteredDependencia | async" [value]="dependencia">
+                  {{dependencia?.nombre}}
+                </mat-option>
+              </mat-autocomplete>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <app-modal-footer (agregar)="agregar()" (close)="close($event)"></app-modal-footer>
+</div>
