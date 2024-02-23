@@ -3,7 +3,6 @@
   <div class="modal-body">
     <div class="container">
       <div class="modal-body">
-
         <div class="row">
           <div class="col-md-12">
             <label>Persona Policial:</label>
@@ -23,16 +22,28 @@
         </div>
         <form [formGroup]="formulario">
           <div class="row">
-            <div class="col-md-8">
-              <label for="dependencia" class="col-form-label">Dotacion:</label>
+            <div class="col-md-12">
+              <label for="dependencia" class="col-form-label">Dotación de Armas:</label>
               <input type="text" id="dependencia" placeholder="Seleccionar subcircuito" class="form-control"
                 formControlName="dependencia" [matAutocomplete]="auto" (input)="onInputValueChangedArmamento($event)">
               <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayArmamento"
                 (optionSelected)="onOptionSelectedArmamento($event)">
-                <mat-option *ngFor="let dependencia of filteredArmamento | async" [value]="dependencia">
-                  {{dependencia?.nombre}}
+                <mat-option *ngFor="let armamento of filteredArmamento | async" [value]="armamento">
+                  {{armamento.nombre}} {{(armamento.tipoArma === '1' ? 'LARGA':'CORTA')}} {{armamento.descripcion}}
                 </mat-option>
               </mat-autocomplete>
+              <div
+                *ngIf="formulario?.get('dependencia')?.invalid && (formulario?.get('dependencia')?.dirty || formulario?.get('dependencia')?.touched)">
+                <div *ngIf="formulario?.get('dependencia')?.hasError('required')"
+                  class="text-danger font-weight-bold error-message">
+                  El campo es requerido*
+                </div>
+                <div
+                  *ngIf="formulario?.get('dependencia')?.touched && formulario?.get('dependencia')?.hasError('invalidParametro')"
+                  class="text-danger font-weight-bold error-message">
+                  Debe seleccionar la dotacion.
+                </div>
+              </div>
             </div>
           </div>
         </form>

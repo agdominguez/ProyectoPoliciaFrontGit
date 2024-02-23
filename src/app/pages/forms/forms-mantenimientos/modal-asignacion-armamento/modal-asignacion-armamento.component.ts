@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatListOption, MatSelectionList } from '@angular/material/list';
@@ -58,7 +58,15 @@ export class ModalAsignacionArmamentoComponent implements OnInit {
 
   // Función para mostrar el nombre en el campo de autocompletado
   displayArmamento(armamentos: Armamento): string {
-    return armamentos?.nombre || '';
+
+    if (!armamentos) {
+      return '';
+    }
+    const nombreArma = armamentos.nombre || '';
+    const tipoArma = armamentos.tipoArma === '1' ? 'LARGA' : 'CORTA' || '';
+    const descripcionArma = armamentos.descripcion || '';
+    return `${nombreArma} ${tipoArma} ${descripcionArma}`;
+    //return armamentos.nombre + (armamentos.tipoArma === '1' ? 'LARGA' : 'CORTA') + armamentos.descripcion || '';
   }
   public listArmamento!: Armamento[];
   public listPersonal!: VinculacionPersonalSubcircuito[];
@@ -85,21 +93,22 @@ export class ModalAsignacionArmamentoComponent implements OnInit {
 
     this.formulario = this.formBuilder.group({
       codigo: [-1],
-      dependencia: ['']
+      dependencia: ['', [
+        Validators.required,
+        CommonUtilsModal.validatorDDL('nombre')]]
     });
     if (!this.asignacionArmamento) {
       this.personalPolicialService.getElemtsform().subscribe(list => {
         this.asignacionArmamentoService.getElemtsform().subscribe(listVinculacion => {
           // Filtra la lista final para excluir elementos que están en listVinculacion
           listaFinalFiltrada = list.filter(item =>
-            !listVinculacion?.some(vinculacionItem => vinculacionItem.vinculacionPersonal.personalPolicial.codigo === item.codigo)
+            !listVinculacion?.some(vinculacionItem => vinculacionItem.vinculacionPersonal.personalPolicial.codigo === item.personalPolicial.codigo)
           );
           this.listPersonal = listaFinalFiltrada;
         });
       });
     } else {
       this.personalPolicialService.getElemtsform().subscribe(list => {
-        //this.listPersonal = list;
         this.listPersonal = list.filter(item => item.personalPolicial.codigo == this.asignacionArmamento.vinculacionPersonal.personalPolicial.codigo);
         this.formulario = this.formBuilder.group({
           codigo: [this.asignacionArmamento?.codigo],
@@ -116,10 +125,12 @@ export class ModalAsignacionArmamentoComponent implements OnInit {
   * Método que se encarga de agregar o actualizar la dependencia, dependiendo de si el código es -1 o no.
   */
   agregar() {
-    if (this.formulario.value.codigo == -1) {
-      this.create();
-    } else {
-      this.update();
+    if (this.formulario.valid) {
+      if (this.formulario.value.codigo == -1) {
+        this.create();
+      } else {
+        this.update();
+      }
     }
   }
 
@@ -140,10 +151,14 @@ export class ModalAsignacionArmamentoComponent implements OnInit {
   public create(): void {
     const armamento = this.formulario.value.dependencia as Armamento;
     let personalSelected: MatListOption[] = this.matList.selectedOptions.selected;
+    // personalSelected.forEach(item => {
+    //   if (item.value === '' || item.value === undefined) {
+    //     console.log(item.value);
+    //   }
+    // });
     personalSelected.forEach(item => {
       if (item.value) {
         const vinculacion = this.createVinculacion(item.value, armamento);
-        //console.log('vinculacion', vinculacion);
         const sub = this.asignacionArmamentoService.create(vinculacion).subscribe({
           error: (err) => {
             this.errores = err.error?.errors as string[];
@@ -158,7 +173,6 @@ export class ModalAsignacionArmamentoComponent implements OnInit {
     });
     Swal.fire('Nuevo Dotacion', `${"Generado Correctamente"}`, 'success');
     this.dialogRef.close(true);
-
   }
 
   /**
