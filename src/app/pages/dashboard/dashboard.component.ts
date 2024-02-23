@@ -8,6 +8,8 @@ import { DependenciaService } from 'src/app/services/services-dependencias/depen
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
+
+
 export class DashboardComponent {
 
 }

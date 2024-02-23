@@ -1,15 +1,14 @@
-import { Observable, catchError, tap, map } from 'rxjs';
-import { HttpHeaders, HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable, catchError, map, tap } from 'rxjs';
+import { AsignacionArmamento } from 'src/app/entities/mantenimientos/AsignacionArmamento';
 import Swal from 'sweetalert2';
-import { Mantenimiento } from 'src/app/entities/mantenimientos/Mantenimiento';
 
 @Injectable({
   providedIn: 'root'
 })
-export class MantenimientoService {
-
-  private urlEndPoint: string = 'http://localhost:8080/mantenimiento'
+export class AsignacionArmamentoService {
+  private urlEndPoint: string = 'http://localhost:8080/asignacionArmamento'
   private httpHeaders = new HttpHeaders({ 'content-Type': 'application/json' })
 
   constructor(
@@ -30,7 +29,7 @@ export class MantenimientoService {
     } else {
       // El servidor devolvió un código de error
       if (error.status === 400) {
-        errorMessage = error.error.mensaje || 'Mantenimiento incorrecta';
+        errorMessage = error.error.mensaje || 'AsignacionArmamento incorrecta';
       } else if (error.status === 404) {
         errorMessage = error.error.mensaje || 'Recurso no encontrado';
       } else if (error.status === 500) {
@@ -53,7 +52,7 @@ export class MantenimientoService {
     return this.http.get<any>(url).pipe(
       catchError(error => this.handleError(error)),
       tap((response: any) => {
-        (response.content as Mantenimiento[]).forEach(mantenimiento => {
+        (response.content as AsignacionArmamento[]).forEach(armamento => {
         });
       })
     );
@@ -72,7 +71,7 @@ export class MantenimientoService {
     return this.http.get<any>(url).pipe(
       catchError(error => this.handleError(error)),
       tap((response: any) => {
-        (response.content as Mantenimiento[]).forEach(mantenimiento => {
+        (response.content as AsignacionArmamento[]).forEach(armamento => {
         });
       })
     );
@@ -85,8 +84,8 @@ export class MantenimientoService {
   // de la lista de elementos en el formulario para editar.
   // *****************************************************
 
-  getElement(): Observable<Mantenimiento[]> {
-    return this.http.get<Mantenimiento[]>(this.urlEndPoint).pipe(
+  getElement(): Observable<AsignacionArmamento[]> {
+    return this.http.get<AsignacionArmamento[]>(this.urlEndPoint).pipe(
       catchError(error => this.handleError(error))
     );
   }
@@ -98,15 +97,9 @@ export class MantenimientoService {
   // base de datos.
   // *****************************************************
 
-  create(mantenimiento: Mantenimiento): Observable<any> {
-    console.log(this.urlEndPoint, mantenimiento);
-    return this.http.post<any>(this.urlEndPoint, mantenimiento, { headers: this.httpHeaders }).pipe(
-      catchError(error => this.handleError(error))
-    );
-  }
-  insertMantenimiento(mantenimiento: Mantenimiento): Observable<any> {
-    const url = `${this.urlEndPoint}/p_inserta_mantenimiento`;
-    return this.http.post<any>(url, mantenimiento, { headers: this.httpHeaders }).pipe(
+  create(armamento: AsignacionArmamento): Observable<any> {
+    console.log(this.urlEndPoint, armamento);
+    return this.http.post<any>(this.urlEndPoint, armamento, { headers: this.httpHeaders }).pipe(
       catchError(error => this.handleError(error))
     );
   }
@@ -118,10 +111,10 @@ export class MantenimientoService {
   // la base de datos.
   // *****************************************************
 
-  update(mantenimiento: Mantenimiento): Observable<Mantenimiento> {
-    return this.http.put<any>(`${this.urlEndPoint}/${mantenimiento.codigo}`, mantenimiento, { headers: this.httpHeaders }).pipe(
+  update(armamento: AsignacionArmamento): Observable<AsignacionArmamento> {
+    return this.http.put<any>(`${this.urlEndPoint}/${armamento.codigo}`, armamento, { headers: this.httpHeaders }).pipe(
       catchError(error => this.handleError(error)),
-      map((response: any) => response.elemento as Mantenimiento)
+      map((response: any) => response.elemento as AsignacionArmamento)
     );
   }
 
@@ -132,8 +125,8 @@ export class MantenimientoService {
   // un elmento de base de datos.
   // *****************************************************
 
-  delete(id: any): Observable<Mantenimiento> {
-    return this.http.delete<Mantenimiento>(`${this.urlEndPoint}/${id}`, { headers: this.httpHeaders }).pipe(
+  delete(id: any): Observable<AsignacionArmamento> {
+    return this.http.delete<AsignacionArmamento>(`${this.urlEndPoint}/${id}`, { headers: this.httpHeaders }).pipe(
       catchError(error => this.handleError(error))
     );
   }
@@ -151,7 +144,7 @@ export class MantenimientoService {
     return this.http.get<any>(`${this.urlEndPoint}/buscar`, { params }).pipe(
       catchError(error => this.handleError(error)),
       tap((response: any) => {
-        (response.content as Mantenimiento[]).forEach(mantenimiento => {
+        (response.content as AsignacionArmamento[]).forEach(armamento => {
         });
       })
     );
@@ -175,8 +168,8 @@ export class MantenimientoService {
   /**
    * Método utilizado para obtener la lista completa de entidades para su uso en formularios.
    */
-  getElemtsform(): Observable<Mantenimiento[]> {
-    return this.http.get<Mantenimiento[]>(this.urlEndPoint + '/list').pipe(
+  getElemtsform(): Observable<AsignacionArmamento[]> {
+    return this.http.get<AsignacionArmamento[]>(this.urlEndPoint + '/list').pipe(
       catchError(error => this.handleError(error))
     );
   }
@@ -193,7 +186,7 @@ export class MantenimientoService {
     return this.http.get<any>(url, { params }).pipe(
       catchError(error => this.handleError(error)),
       tap((response: any) => {
-        (response.content as Mantenimiento[]).forEach(mantenimiento => {
+        (response.content as AsignacionArmamento[]).forEach(armamento => {
           // Se puede realizar alguna operación con cada elemento de la lista si es necesario
         });
       })

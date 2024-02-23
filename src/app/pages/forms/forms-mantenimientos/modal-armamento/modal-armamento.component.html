@@ -1,0 +1,103 @@
+<div class="style">
+  <app-modal-header [titulo]="titulo" (dismiss)="dismiss()"></app-modal-header>
+  <div class="modal-body">
+    <div class="container">
+      <div class="modal-body">
+        <form [formGroup]="formulario">
+          <div class="row">
+            <div class="col-md-6">
+              <label for="tipoArma" class="col-form-label">Tipo de Arma:</label>
+              <select class="form-select" id="tipoArma" aria-label="Default select example" formControlName="tipoArma">
+                <option selected>Seleccione el tipo</option>
+                <option value="1">LARGA</option>
+                <option value="2">CORTA</option>
+              </select>
+              <div
+                *ngIf="formulario?.get('tipoArma')?.invalid && (formulario?.get('tipoArma')?.dirty || formulario?.get('tipoArma')?.touched)">
+                <div *ngIf="formulario?.get('tipoArma')?.hasError('required')"
+                  class="text-danger font-weight-bold error-message">
+                  La tipo de Arma es requerida*
+                </div>
+                <div *ngIf="formulario?.get('tipoArma')?.hasError('hasSymbols')"
+                  class="text-danger font-weight-bold error-message">
+                  La tipo de Arma no puede contener símbolos.</div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label for="nombre" class="col-form-label">Nombre:</label>
+              <input type="text" class="form-control" id="nombre" formControlName="nombre">
+              <div
+                *ngIf="formulario?.get('nombre')?.invalid && (formulario?.get('nombre')?.dirty || formulario?.get('nombre')?.touched)">
+                <div *ngIf="formulario?.get('nombre')?.hasError('required')"
+                  class="text-danger font-weight-bold error-message">
+                  La nombre es requerida*
+                </div>
+                <div *ngIf="formulario?.get('nombre')?.hasError('hasSymbols')"
+                  class="text-danger font-weight-bold error-message">
+                  La nombre no puede contener símbolos.</div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <label for="descripcion" class="col-form-label">Descripción:</label>
+              <input type="text" class="form-control" id="descripcion" formControlName="descripcion">
+              <div
+                *ngIf="formulario?.get('descripcion')?.invalid && (formulario?.get('descripcion')?.dirty || formulario?.get('descripcion')?.touched)">
+                <div *ngIf="formulario?.get('descripcion')?.hasError('required')"
+                  class="text-danger font-weight-bold error-message">
+                  La descripcion es requerida*
+                </div>
+                <div *ngIf="formulario?.get('descripcion')?.hasError('hasSymbols')"
+                  class="text-danger font-weight-bold error-message">
+                  La descripcion no puede contener símbolos.</div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label for="codigoArma" class="col-form-label">Código de Arma:</label>
+              <input type="text" class="form-control" id="codigoArma" formControlName="codigoArma">
+              <div
+                *ngIf="formulario?.get('codigoArma')?.invalid && (formulario?.get('codigoArma')?.dirty || formulario?.get('codigoArma')?.touched)">
+                <div *ngIf="formulario?.get('codigoArma')?.hasError('required')"
+                  class="text-danger font-weight-bold error-message">
+                  La codigo de Arma es requerida*
+                </div>
+                <div *ngIf="formulario?.get('codigoArma')?.hasError('hasSymbols')"
+                  class="text-danger font-weight-bold error-message">
+                  La codigo de Arma no puede contener símbolos.</div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <label for="dependencia" class="col-form-label">Dependencia:</label>
+              <input type="text" id="dependencia" placeholder="Seleccionar dependencia"
+                formControlName="dependencia" class="form-control" [matAutocomplete]="autoDep"
+                (input)="onInputValueChangedDependencia($event)">
+              <mat-autocomplete #autoDep="matAutocomplete" [displayWith]="displayDependencia"
+                (optionSelected)="onOptionSelectedDependencia($event)">
+                <mat-option *ngFor="let dependencia of filteredDependencia | async" [value]="dependencia">
+                  {{dependencia.nombre}}
+                </mat-option>
+              </mat-autocomplete>
+              <div
+                *ngIf="formulario?.get('dependencia')?.invalid && (formulario?.get('dependencia')?.dirty || formulario?.get('dependencia')?.touched)">
+                <div *ngIf="formulario?.get('dependencia')?.hasError('required')"
+                  class="text-danger font-weight-bold error-message">
+                  El campo es requerido*
+                </div>
+                <div
+                  *ngIf="formulario?.get('dependencia')?.touched && formulario?.get('dependencia')?.hasError('invalidParametro')"
+                  class="text-danger font-weight-bold error-message">
+                  Debe seleccionar la ciudad.
+                </div>
+              </div>
+            </div>
+          </div>
+          <input id="eliminado" name="eliminado" type="hidden" formControlName="eliminado" value="N">
+        </form>
+      </div>
+    </div>
+  </div>
+  <app-modal-footer (agregar)="agregar()" (close)="close($event)"></app-modal-footer>
+</div>

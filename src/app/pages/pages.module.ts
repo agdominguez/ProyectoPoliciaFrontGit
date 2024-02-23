@@ -34,6 +34,12 @@ import { MantenimientoComponent } from './list/mantenimientos/mantenimiento/mant
 import { ModalMantenimientoComponent } from './forms/forms-mantenimientos/modal-mantenimiento/modal-mantenimiento.component';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import { ReporteSugerenciaComponent } from './list/reportes/reporte-sugerencia/reporte-sugerencia.component';
+import { OrdenTrabajoComponent } from './list/mantenimientos/orden-trabajo/orden-trabajo.component';
+import { ModalOrdenTrabajoComponent } from './forms/forms-mantenimientos/modal-orden-trabajo/modal-orden-trabajo.component';
+import { ArmamentoComponent } from './list/mantenimientos/armamento/armamento.component';
+import { ModalArmamentoComponent } from './forms/forms-mantenimientos/modal-armamento/modal-armamento.component';
+import { ModalAsignacionArmamentoComponent } from './forms/forms-mantenimientos/modal-asignacion-armamento/modal-asignacion-armamento.component';
+import { AsignacionArmasComponent } from './list/mantenimientos/asignacion-armas/asignacion-armas.component';
 
 @NgModule({
   declarations: [
@@ -56,7 +62,13 @@ import { ReporteSugerenciaComponent } from './list/reportes/reporte-sugerencia/r
     ModalSolicitudComponent,
     MantenimientoComponent,
     ModalMantenimientoComponent,
-    ReporteSugerenciaComponent
+    ReporteSugerenciaComponent,
+    OrdenTrabajoComponent,
+    ModalOrdenTrabajoComponent,
+    ArmamentoComponent,
+    ModalArmamentoComponent,
+    ModalAsignacionArmamentoComponent,
+    AsignacionArmasComponent
   ],
   exports:[
     DashboardComponent,

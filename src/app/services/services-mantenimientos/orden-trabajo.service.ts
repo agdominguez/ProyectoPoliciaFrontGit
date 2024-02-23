@@ -1,15 +1,15 @@
-import { Observable, catchError, tap, map } from 'rxjs';
-import { HttpHeaders, HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable, catchError, map, tap } from 'rxjs';
+import { OrdenTrabajo } from 'src/app/entities/mantenimientos/OrdenTrabajo';
 import Swal from 'sweetalert2';
-import { Mantenimiento } from 'src/app/entities/mantenimientos/Mantenimiento';
 
 @Injectable({
   providedIn: 'root'
 })
-export class MantenimientoService {
+export class OrdenTrabajoService {
 
-  private urlEndPoint: string = 'http://localhost:8080/mantenimiento'
+  private urlEndPoint: string = 'http://localhost:8080/ordenTrabajo'
   private httpHeaders = new HttpHeaders({ 'content-Type': 'application/json' })
 
   constructor(
@@ -30,7 +30,7 @@ export class MantenimientoService {
     } else {
       // El servidor devolvió un código de error
       if (error.status === 400) {
-        errorMessage = error.error.mensaje || 'Mantenimiento incorrecta';
+        errorMessage = error.error.mensaje || 'OrdenTrabajo incorrecta';
       } else if (error.status === 404) {
         errorMessage = error.error.mensaje || 'Recurso no encontrado';
       } else if (error.status === 500) {
@@ -53,7 +53,7 @@ export class MantenimientoService {
     return this.http.get<any>(url).pipe(
       catchError(error => this.handleError(error)),
       tap((response: any) => {
-        (response.content as Mantenimiento[]).forEach(mantenimiento => {
+        (response.content as OrdenTrabajo[]).forEach(ordenTrabajo => {
         });
       })
     );
@@ -72,7 +72,7 @@ export class MantenimientoService {
     return this.http.get<any>(url).pipe(
       catchError(error => this.handleError(error)),
       tap((response: any) => {
-        (response.content as Mantenimiento[]).forEach(mantenimiento => {
+        (response.content as OrdenTrabajo[]).forEach(ordenTrabajo => {
         });
       })
     );
@@ -85,8 +85,8 @@ export class MantenimientoService {
   // de la lista de elementos en el formulario para editar.
   // *****************************************************
 
-  getElement(): Observable<Mantenimiento[]> {
-    return this.http.get<Mantenimiento[]>(this.urlEndPoint).pipe(
+  getElement(): Observable<OrdenTrabajo[]> {
+    return this.http.get<OrdenTrabajo[]>(this.urlEndPoint).pipe(
       catchError(error => this.handleError(error))
     );
   }
@@ -98,15 +98,9 @@ export class MantenimientoService {
   // base de datos.
   // *****************************************************
 
-  create(mantenimiento: Mantenimiento): Observable<any> {
-    console.log(this.urlEndPoint, mantenimiento);
-    return this.http.post<any>(this.urlEndPoint, mantenimiento, { headers: this.httpHeaders }).pipe(
-      catchError(error => this.handleError(error))
-    );
-  }
-  insertMantenimiento(mantenimiento: Mantenimiento): Observable<any> {
-    const url = `${this.urlEndPoint}/p_inserta_mantenimiento`;
-    return this.http.post<any>(url, mantenimiento, { headers: this.httpHeaders }).pipe(
+  create(ordenTrabajo: OrdenTrabajo): Observable<any> {
+    console.log(this.urlEndPoint, ordenTrabajo);
+    return this.http.post<any>(this.urlEndPoint, ordenTrabajo, { headers: this.httpHeaders }).pipe(
       catchError(error => this.handleError(error))
     );
   }
@@ -118,10 +112,11 @@ export class MantenimientoService {
   // la base de datos.
   // *****************************************************
 
-  update(mantenimiento: Mantenimiento): Observable<Mantenimiento> {
-    return this.http.put<any>(`${this.urlEndPoint}/${mantenimiento.codigo}`, mantenimiento, { headers: this.httpHeaders }).pipe(
+  update(ordenTrabajo: OrdenTrabajo): Observable<OrdenTrabajo> {
+    console.log(ordenTrabajo);
+    return this.http.put<any>(`${this.urlEndPoint}/${ordenTrabajo.codigo}`, ordenTrabajo, { headers: this.httpHeaders }).pipe(
       catchError(error => this.handleError(error)),
-      map((response: any) => response.elemento as Mantenimiento)
+      map((response: any) => response.elemento as OrdenTrabajo)
     );
   }
 
@@ -132,8 +127,8 @@ export class MantenimientoService {
   // un elmento de base de datos.
   // *****************************************************
 
-  delete(id: any): Observable<Mantenimiento> {
-    return this.http.delete<Mantenimiento>(`${this.urlEndPoint}/${id}`, { headers: this.httpHeaders }).pipe(
+  delete(id: any): Observable<OrdenTrabajo> {
+    return this.http.delete<OrdenTrabajo>(`${this.urlEndPoint}/${id}`, { headers: this.httpHeaders }).pipe(
       catchError(error => this.handleError(error))
     );
   }
@@ -151,9 +146,16 @@ export class MantenimientoService {
     return this.http.get<any>(`${this.urlEndPoint}/buscar`, { params }).pipe(
       catchError(error => this.handleError(error)),
       tap((response: any) => {
-        (response.content as Mantenimiento[]).forEach(mantenimiento => {
+        (response.content as OrdenTrabajo[]).forEach(ordenTrabajo => {
         });
       })
+    );
+  }
+
+  actualizaEstadoOrdenTrabajo(ordenTrabajo: OrdenTrabajo): Observable<any> {
+    //console.log(this.urlEndPoint, ordenTrabajo);
+    return this.http.post<any>(this.urlEndPoint + '/p_actualiza_estado_orden', ordenTrabajo, { headers: this.httpHeaders }).pipe(
+      catchError(error => this.handleError(error))
     );
   }
 
@@ -175,8 +177,8 @@ export class MantenimientoService {
   /**
    * Método utilizado para obtener la lista completa de entidades para su uso en formularios.
    */
-  getElemtsform(): Observable<Mantenimiento[]> {
-    return this.http.get<Mantenimiento[]>(this.urlEndPoint + '/list').pipe(
+  getElemtsform(): Observable<OrdenTrabajo[]> {
+    return this.http.get<OrdenTrabajo[]>(this.urlEndPoint + '/list').pipe(
       catchError(error => this.handleError(error))
     );
   }
@@ -193,7 +195,7 @@ export class MantenimientoService {
     return this.http.get<any>(url, { params }).pipe(
       catchError(error => this.handleError(error)),
       tap((response: any) => {
-        (response.content as Mantenimiento[]).forEach(mantenimiento => {
+        (response.content as OrdenTrabajo[]).forEach(ordenTrabajo => {
           // Se puede realizar alguna operación con cada elemento de la lista si es necesario
         });
       })

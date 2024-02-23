@@ -35,6 +35,11 @@ export class AuthService {
     this.keycloak.login({redirectUri: "http://localhost:4200/dashboard"}).then();
   }
 
+  login1(): Promise<void> {
+    // Lógica de inicio de sesión
+    return this.keycloak.login({ redirectUri: "http://localhost:4200/dashboard" });
+  }
+
 
   isLoggedIn(): Promise<boolean> {
     return this.keycloak.isLoggedIn();

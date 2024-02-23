@@ -6,11 +6,18 @@ import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { Component, OnInit, Input } from '@angular/core';
 import { ModalPersonalPolicialComponent } from '../../forms-personas/modal-personal-policial/modal-personal-policial.component';
 import { Mantenimiento } from 'src/app/entities/mantenimientos/Mantenimiento';
-import { Solicitud } from 'src/app/entities/mantenimientos/Solicitud';
+import { Solicitud, TipoSolicitud } from 'src/app/entities/mantenimientos/Solicitud';
 import { CommonUtilsModal } from 'src/app/generics_methods/CommonUtilsModal';
 import { SolicitudService } from 'src/app/services/services-mantenimientos/solicitud.service';
 import { TipoMantenimiento } from 'src/app/entities/mantenimientos/TipoMantenimiento';
 import { TipoMantenimientoService } from 'src/app/services/services-mantenimientos/tipo-mantenimiento.service';
+import { MantenimientoService } from 'src/app/services/services-mantenimientos/mantenimiento.service';
+import { MantenimientoTipo } from 'src/app/entities/mantenimientos/MantenimientoTipo';
+import { ResponseService } from 'src/app/entities/ResponseService';
+import { MantenimientoTipoService } from 'src/app/services/services-mantenimientos/mantenimiento-tipo.service';
+import Swal from 'sweetalert2';
+import { EstadoOrdenTrabajo, OrdenTrabajo } from 'src/app/entities/mantenimientos/OrdenTrabajo';
+import { OrdenTrabajoService } from 'src/app/services/services-mantenimientos/orden-trabajo.service';
 
 @Component({
   selector: 'app-modal-mantenimiento',
@@ -60,11 +67,16 @@ export class ModalMantenimientoComponent implements OnInit {
 
   listSolicitud!: Solicitud[];
   listTipoMantenimiento!: TipoMantenimiento[];
+  listValor!: TipoMantenimiento[];
+  listDetalleMantenimiento!: MantenimientoTipo[];
 
   constructor(
     private formBuilder: FormBuilder,
     private solicitudService: SolicitudService,
     private tipoMantenimientoService: TipoMantenimientoService,
+    private mantenimientoService: MantenimientoService,
+    private mantenimientoTipoService: MantenimientoTipoService,
+    private ordenTrabajoService: OrdenTrabajoService,
     private dialogRef: MatDialogRef<ModalPersonalPolicialComponent>,
   ) {
     // Inicializa personalPolicial si es null
@@ -100,7 +112,7 @@ export class ModalMantenimientoComponent implements OnInit {
   setupVinculacion(): void {
     this.solicitudService.getElemtsform().subscribe(list => {
 
-      this.listSolicitud = list;
+      this.listSolicitud = list.filter(entity => entity.estado === 'A');
       this.filteredSolicitud = of(this.listSolicitud).pipe(
         map(value => this.filterSolicitud(''))
       );
@@ -115,9 +127,92 @@ export class ModalMantenimientoComponent implements OnInit {
   }
 
   /**
-  * Método que se encarga de agregar o actualizar la personalPolicial, dependiendo de si el código es -1 o no.
+  * Método que se encarga de agregar un mantenimiento.
   */
   agregar() {
+    this.create();
+  }
+
+  public create(): void {
+
+    const sub = this.mantenimientoService.insertMantenimiento(this.crearMantenimiento()).subscribe(
+      {
+        next: (json: ResponseService) => {
+          if (json.pv_error === null) {
+            this.mantenimientoTipoService.insertList(this.crearListDetalleMantenimiento(json.p_codigo)).subscribe({
+              next: (jsonDetails: any) => {
+                if (jsonDetails) {
+                  this.ordenTrabajoService.create(this.crearOrdenTrabajo(json.p_codigo)).subscribe({
+                    next: () => {
+                      this.solicitudService.actualizaEstadoSolicitud(this.crearSolicitud()).subscribe();
+                    }
+                  });
+                  Swal.fire('Nuevo Mantenimiento', `El elemento ha sido creado con exito: ${json.p_codigo}`, 'success');
+                  this.dialogRef.close(true);
+                }
+              },
+            });
+
+          }
+        },
+        error: (err) => {
+          this.errores = err.error?.errors as string[];
+          const errorMessage = err.error?.mensaje || 'Ha ocurrido un error en el servidor';
+          console.error('Código de error desde el backend: ' + err.status);
+          console.error(err.error?.errors);
+          Swal.fire('Error', errorMessage, 'error');
+        }
+      }
+    );
+    this.subscriptions.push(sub);
+  }
+
+  crearSolicitud() {
+    const solicitud = new Solicitud();
+    solicitud.codigo = this.formulario.value?.solicitud?.codigo;
+    solicitud.estado = TipoSolicitud.MANTENIMIENTO;
+    return solicitud;
+  }
+
+  crearOrdenTrabajo(codigoMantenimiento: number) {
+
+    const ordenTrabajo = new OrdenTrabajo();
+    ordenTrabajo.codigo = -1;
+    ordenTrabajo.eliminado = 'N';
+    ordenTrabajo.estado = EstadoOrdenTrabajo.GENERADA;
+    ordenTrabajo.fechaEntrega = this.sumarDiasLaborables(new Date(), 3);
+    ordenTrabajo.kilometrajeMantenimiento = 0;
+    ordenTrabajo.mantenimiento = new Mantenimiento().constructorPK(codigoMantenimiento);
+    ordenTrabajo.observacion = 'ORDEN GENERADA EN PROCESO';
+    ordenTrabajo.personalRetira = this.formulario?.value?.solicitud?.vinculacion?.vinculacionPersonal?.personalPolicial;
+
+    return ordenTrabajo;
+  }
+
+  crearListDetalleMantenimiento(codigoMantenimiento: number) {
+    this.listDetalleMantenimiento = [];
+    this.listValor.forEach(item => {
+      const mantenimientoTipo = new MantenimientoTipo();
+      mantenimientoTipo.codigo = -1;
+      mantenimientoTipo.mantenimiento = new Mantenimiento().constructorPK(codigoMantenimiento);
+      mantenimientoTipo.tipo = item;
+      mantenimientoTipo.eliminado = 'N'
+      this.listDetalleMantenimiento.push(mantenimientoTipo);
+    });
+
+    return this.listDetalleMantenimiento;
+
+  }
+
+  crearMantenimiento() {
+    const mantenimiento = new Mantenimiento();
+    mantenimiento.solicitud = this.formulario?.value?.solicitud;
+    mantenimiento.asunto = this.formulario?.value?.asunto;
+    mantenimiento.detalle = this.formulario?.value?.detalle;
+    mantenimiento.eliminado = 'N';
+    mantenimiento.fechaIngreso = new Date();
+    mantenimiento.kilometrajeActual = parseFloat(this.formulario?.value?.kilometrajeActual);
+    return mantenimiento;
   }
 
   /**
@@ -181,8 +276,10 @@ export class ModalMantenimientoComponent implements OnInit {
     }
   }
 
-  listValor!: TipoMantenimiento[];
 
+  subTotal: number = 0;
+  ivaTotal: number = 0;
+  total: number = 0;
   // Método que se ejecuta cuando cambia la selección
   onChangeMantenimiento(event: MatSelectionListChange) {
 
@@ -190,6 +287,14 @@ export class ModalMantenimientoComponent implements OnInit {
     const selectedMantenimientos = selectedOptions.map(option => option.value);
 
     this.listValor = selectedMantenimientos;
+    this.subTotal = 0;
+    this.ivaTotal = 0;
+    this.total = 0;
+    for (let valor of this.listValor) {
+      this.subTotal += valor.costo;
+      this.ivaTotal += (valor.costo * (1 + valor.tipoContrato.iva / 100)) - valor.costo;
+      this.total = this.subTotal + this.ivaTotal;
+    }
 
     if (selectedMantenimientos) {
       selectedMantenimientos.forEach(selectedMantenimiento => {
@@ -210,4 +315,21 @@ export class ModalMantenimientoComponent implements OnInit {
       });
     }
   }
+
+  sumarDiasLaborables(fecha: Date, dias: number): Date {
+    let diasLaborablesSumados = 0;
+    let fechaActual = new Date(fecha); // Clonar la fecha para no modificar la original
+
+    while (diasLaborablesSumados < dias) {
+      // Avanzar un día
+      fechaActual.setDate(fechaActual.getDate() + 1);
+
+      // Verificar si es día laborable (lunes a viernes)
+      if (fechaActual.getDay() !== 0 && fechaActual.getDay() !== 6) {
+        diasLaborablesSumados++;
+      }
+    }
+    return fechaActual;
+  }
+
 }

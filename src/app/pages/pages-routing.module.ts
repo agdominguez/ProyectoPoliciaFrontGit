@@ -13,6 +13,9 @@ import { AuthGuard } from '../authentication/auth.guard';
 import { VinculacionComponent } from './list/mantenimientos/vinculacion/vinculacion.component';
 import { MantenimientoComponent } from './list/mantenimientos/mantenimiento/mantenimiento.component';
 import { ReporteSugerenciaComponent } from './list/reportes/reporte-sugerencia/reporte-sugerencia.component';
+import { OrdenTrabajoComponent } from './list/mantenimientos/orden-trabajo/orden-trabajo.component';
+import { ArmamentoComponent } from './list/mantenimientos/armamento/armamento.component';
+import { AsignacionArmasComponent } from './list/mantenimientos/asignacion-armas/asignacion-armas.component';
 
 const isAuthenticated: CanActivateFn = (route, state) => {
   return inject(AuthGuard).isAccessAllowed(route, state);
@@ -40,6 +43,12 @@ const routes: Routes = [
       { path: 'mantenimiento/page/:page', component: MantenimientoComponent, data: { titulo: 'Mantenimiento' } },
       { path: 'sugerencia', component: ReporteSugerenciaComponent, data: { titulo: 'Sugerencias' } },
       { path: 'sugerencia/page/:page', component: ReporteSugerenciaComponent, data: { titulo: 'Sugerencias' } },
+      { path: 'ordenTrabajo', component: OrdenTrabajoComponent, data: { titulo: 'Orden Trabajo' } },
+      { path: 'ordenTrabajo/page/:page', component: OrdenTrabajoComponent, data: { titulo: 'Orden Trabajo' } },
+      { path: 'armamento', component: ArmamentoComponent, data: { titulo: 'Armamento' } },
+      { path: 'armamento/page/:page', component: ArmamentoComponent, data: { titulo: 'Armamento' } },
+      { path: 'asignacionArmas', component: AsignacionArmasComponent, data: { titulo: 'Dotacion' } },
+      { path: 'asignacionArmas/page/:page', component: AsignacionArmasComponent, data: { titulo: 'Dotacion' } },
     ]
 
 

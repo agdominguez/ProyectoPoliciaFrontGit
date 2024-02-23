@@ -2,22 +2,28 @@ import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { EstadoOrdenTrabajo, OrdenTrabajo } from 'src/app/entities/mantenimientos/OrdenTrabajo';
 import { Solicitud, TipoSolicitud } from 'src/app/entities/mantenimientos/Solicitud';
-import { ModalSolicitudComponent } from 'src/app/pages/forms/forms-mantenimientos/modal-solicitud/modal-solicitud.component';
+import { ModalOrdenTrabajoComponent } from 'src/app/pages/forms/forms-mantenimientos/modal-orden-trabajo/modal-orden-trabajo.component';
+import { OrdenTrabajoService } from 'src/app/services/services-mantenimientos/orden-trabajo.service';
 import { SolicitudService } from 'src/app/services/services-mantenimientos/solicitud.service';
 import Swal from 'sweetalert2';
 
+const KM_MOTOS = 2000;
+const KM_OTROS = 5000;
+
 @Component({
-  selector: 'app-solicitud',
-  templateUrl: './solicitud.component.html',
-  styleUrls: ['./solicitud.component.css']
+  selector: 'app-orden-trabajo',
+  templateUrl: './orden-trabajo.component.html',
+  styleUrls: ['./orden-trabajo.component.css']
 })
-export class SolicitudComponent {
+export class OrdenTrabajoComponent {
+
   page!: number;
   pageSize: number = 10;
-  solicitudList!: Solicitud[];
+  ordenTrabajoList!: OrdenTrabajo[];
   paginador: any;
-  nombre: string = 'solicitud';
+  nombre: string = 'ordenTrabajo';
   etiquetabtn: string = '+ Crear Nuevo';
   searchValue: string = '';
   private subscriptions: Subscription[] = [];
@@ -28,6 +34,7 @@ export class SolicitudComponent {
 
   constructor(
     private dialog: MatDialog,
+    private ordenTrabajoService: OrdenTrabajoService,
     private solicitudService: SolicitudService,
     private activatedRoute: ActivatedRoute
   ) {
@@ -50,7 +57,7 @@ export class SolicitudComponent {
         this.page = 0;
       }
 
-      // Obtiene la lista de solicitudList sin eliminar para la página actual
+      // Obtiene la lista de ordenTrabajoList sin eliminar para la página actual
       this.obtenerListaNoEliminadaOrdenada(this.sortColumn, this.sortDirection);
     });
     this.subscriptions.push(sub);
@@ -68,15 +75,15 @@ export class SolicitudComponent {
    * Método que obtiene la lista de tiposTelefono no eliminados para la página actual con ordenamiento.
    */
   obtenerListaNoEliminadaOrdenada(sortColumn: string, sortDirection: string): void {
-    // Realiza una solicitud al servicio para obtener la lista de tiposTelefono no eliminados con ordenamiento
-    const sub: Subscription = this.solicitudService.getNotDeletedOrdered(this.pageSize, this.page, sortColumn, sortDirection).subscribe({
+    // Realiza una ordenTrabajo al servicio para obtener la lista de tiposTelefono no eliminados con ordenamiento
+    const sub: Subscription = this.ordenTrabajoService.getNotDeletedOrdered(this.pageSize, this.page, sortColumn, sortDirection).subscribe({
       next: (response: any) => {
         // Se procesa la respuesta y se actualiza el componente con los datos recibidos
-        this.solicitudList = response.content as Solicitud[];
+        this.ordenTrabajoList = response.content as OrdenTrabajo[];
         this.paginador = response;
       },
       error: (error: any) => {
-        // Se manejan los errores que puedan ocurrir durante la solicitud
+        // Se manejan los errores que puedan ocurrir durante la ordenTrabajo
         console.error('Error al cargar items de la lista', error);
         Swal.fire('Error', 'Ha ocurrido un error al cargar la lista. Por favor, intenta nuevamente más tarde.', 'error');
       }
@@ -86,7 +93,7 @@ export class SolicitudComponent {
   }
 
   /**
-   * Método que realiza la búsqueda de solicitudList según el término especificado.
+   * Método que realiza la búsqueda de ordenTrabajoList según el término especificado.
    */
   searchList(): void {
     if (this.searchValue.trim() === '') {
@@ -95,10 +102,10 @@ export class SolicitudComponent {
     } else {
       // Si hay un término de búsqueda, realizar la búsqueda con el término especificado
       this.page = 0; // Establecer la página inicial para la búsqueda
-      const sub = this.solicitudService.searchList(this.searchValue, this.page, this.pageSize).subscribe({
+      const sub = this.ordenTrabajoService.searchList(this.searchValue, this.page, this.pageSize).subscribe({
         next: (response: any) => {
           // Se procesa la respuesta y se actualiza el componente con los datos recibidos
-          this.solicitudList = response.content as Solicitud[];
+          this.ordenTrabajoList = response.content as OrdenTrabajo[];
           this.paginador = response;
         },
         error: (error: any) => {
@@ -123,12 +130,12 @@ export class SolicitudComponent {
   }
 
   /**
-   * Método que procesar una solicitud.
-   * @param solicitud La solicitud a procesar.
-   */
-  procesar(solicitud: Solicitud, estado: string): void {
+  * Método que procesar una orden de trabajo.
+  * @param ordenTrabajo La orden de trabajo a procesar.
+  */
+  procesar(ordenTrabajo: OrdenTrabajo, estado: string): void {
     // Muestra una alerta para confirmar la eliminación de la solicitud
-    if (solicitud.estado === estado) {
+    if (ordenTrabajo.estado === estado) {
       Swal.mixin({
         toast: true,
         position: 'top-end',
@@ -141,35 +148,12 @@ export class SolicitudComponent {
 
       }).fire({
         icon: 'error',
-        title: `La solicitud número ${solicitud.codigo} se encuentra ${this.tipoSolicitud(solicitud.estado)}.`,
+        title: `La Orden de trabajo número ${ordenTrabajo.codigo} se encuentra ${this.convertEstadoOrdenTrabajo(ordenTrabajo.estado)}.`,
         iconColor: '#FF0000'
       });
       return;
-    } else {
-      if ((solicitud.estado === TipoSolicitud.APROBADA && estado === TipoSolicitud.RECHAZADA) ||
-        (solicitud.estado === TipoSolicitud.RECHAZADA && estado === TipoSolicitud.APROBADA) ||
-        (solicitud.estado === TipoSolicitud.MANTENIMIENTO && estado === TipoSolicitud.APROBADA) ||
-        (solicitud.estado === TipoSolicitud.MANTENIMIENTO && estado === TipoSolicitud.RECHAZADA) ||
-        (solicitud.estado === TipoSolicitud.FINALIZADA && estado === TipoSolicitud.APROBADA) ||
-        (solicitud.estado === TipoSolicitud.FINALIZADA && estado === TipoSolicitud.RECHAZADA)) {
-        Swal.mixin({
-          toast: true,
-          position: 'top-end',
-          showConfirmButton: false,
-          timer: 4000,
-          width: '30%',
-          background: 'white',
-          padding: '5%',
-          color: '#FF0000'
-
-        }).fire({
-          icon: 'error',
-          title: `La solicitud número ${solicitud.codigo} se encuentra ${this.tipoSolicitud(solicitud.estado)}, no puede cambiar a ${this.tipoSolicitud(estado)}.`,
-          iconColor: '#FF0000'
-        });
-        return;
-      }
     }
+
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
         confirmButton: 'btn btn-success me-2',
@@ -180,24 +164,31 @@ export class SolicitudComponent {
 
     swalWithBootstrapButtons.fire({
       title: '¿Está seguro?',
-      text: `¿Está seguro que desea ${this.estadoSolicitud(estado)} la solicitud Nro. ${solicitud.codigo}?`,
+      text: `¿Está seguro que desea ${this.estadoOrdenTrabajo(estado)} la orden de trabajo Nro. ${ordenTrabajo.codigo}?`,
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: `Sí, ${this.estadoSolicitud(estado)}`,
+      confirmButtonText: `Sí, ${this.estadoOrdenTrabajo(estado)}`,
       cancelButtonText: 'No, cancelar',
       reverseButtons: true
     }).then((result) => {
       if (result.isConfirmed) {
         // Realiza una solicitud al servicio para marcar la solicitud como eliminada
-        solicitud.estado = estado === 'A' ? TipoSolicitud.APROBADA : TipoSolicitud.RECHAZADA;
-        const sub = this.solicitudService.actualizaEstadoSolicitud(solicitud).subscribe({
+        ordenTrabajo.estado = estado === 'F' ? EstadoOrdenTrabajo.FINALIZADA : EstadoOrdenTrabajo.GENERADA;
+        const sub = this.ordenTrabajoService.actualizaEstadoOrdenTrabajo(ordenTrabajo).subscribe({
           next: response => {
+
+            this.calculoProximoMantenimiento(ordenTrabajo);
+            ordenTrabajo.kilometrajeMantenimiento = this.kmProximoMantenimiento;
+            this.ordenTrabajoService.update(ordenTrabajo).subscribe();
+
+            ordenTrabajo.mantenimiento.solicitud.estado = estado === 'F' ? TipoSolicitud.FINALIZADA : TipoSolicitud.MANTENIMIENTO;
+            this.solicitudService.actualizaEstadoSolicitud(ordenTrabajo.mantenimiento.solicitud).subscribe();
             // Si se elimina correctamente, se filtra la solicitud de la lista local
             // this.solicitudList = this.solicitudList.filter(ec => ec !== solicitud);
-            const estadoAlert = estado === TipoSolicitud.APROBADA ? 'aprobado' : 'rechazado'
+            const estadoAlert = estado === EstadoOrdenTrabajo.FINALIZADA ? 'finalizado' : ''
             swalWithBootstrapButtons.fire(
               `Elemento ${estadoAlert}`,
-              `Elemento ${solicitud.vinculacion.vinculacionFlota.flotaVehicular.placa} marcado como ${estadoAlert} con éxito.`,
+              `Elemento ${ordenTrabajo.codigo} marcado como ${estadoAlert} con éxito.`,
               'success'
             );
           },
@@ -205,7 +196,7 @@ export class SolicitudComponent {
             // Se maneja el error en caso de que ocurra algún problema al eliminar la solicitud
             swalWithBootstrapButtons.fire(
               'Error',
-              'Hubo un error al procesar Elemento',
+              'Hubo un error al procesar el Elemento',
               'error'
             );
           }
@@ -216,11 +207,11 @@ export class SolicitudComponent {
   }
 
   /**
-   * Método que elimina una solicitud.
-   * @param solicitud La solicitud a eliminar.
+   * Método que elimina una ordenTrabajo.
+   * @param ordenTrabajo La ordenTrabajo a eliminar.
    */
-  delete(solicitud: Solicitud): void {
-    // Muestra una alerta para confirmar la eliminación de la solicitud
+  delete(ordenTrabajo: OrdenTrabajo): void {
+    // Muestra una alerta para confirmar la eliminación de la ordenTrabajo
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
         confirmButton: 'btn btn-success me-2',
@@ -231,7 +222,7 @@ export class SolicitudComponent {
 
     swalWithBootstrapButtons.fire({
       title: '¿Está seguro?',
-      text: `¿Está seguro que desea eliminar ${solicitud.codigo}?`,
+      text: `¿Está seguro que desea eliminar ${ordenTrabajo.codigo}?`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Sí, eliminar',
@@ -239,19 +230,19 @@ export class SolicitudComponent {
       reverseButtons: true
     }).then((result) => {
       if (result.isConfirmed) {
-        // Realiza una solicitud al servicio para marcar la solicitud como eliminada
-        const sub = this.solicitudService.statusEliminado(solicitud.codigo).subscribe({
+        // Realiza una ordenTrabajo al servicio para marcar la ordenTrabajo como eliminada
+        const sub = this.ordenTrabajoService.statusEliminado(ordenTrabajo.codigo).subscribe({
           next: response => {
-            // Si se elimina correctamente, se filtra la solicitud de la lista local
-            this.solicitudList = this.solicitudList.filter(ec => ec !== solicitud);
+            // Si se elimina correctamente, se filtra la ordenTrabajo de la lista local
+            this.ordenTrabajoList = this.ordenTrabajoList.filter(ec => ec !== ordenTrabajo);
             swalWithBootstrapButtons.fire(
               'Elemento eliminado',
-              `Elemento ${solicitud.vinculacion.vinculacionFlota.flotaVehicular.placa} marcado como eliminado con éxito.`,
+              `Elemento ${ordenTrabajo.codigo} marcado como eliminado con éxito.`,
               'success'
             );
           },
           error: error => {
-            // Se maneja el error en caso de que ocurra algún problema al eliminar la solicitud
+            // Se maneja el error en caso de que ocurra algún problema al eliminar la ordenTrabajo
             swalWithBootstrapButtons.fire(
               'Error',
               'Hubo un error al eliminar Elemento',
@@ -265,32 +256,30 @@ export class SolicitudComponent {
   }
 
   /**
-   * Método que abre el modal para crear o editar una solicitud.
-   * @param solicitud La solicitud a editar (opcional).
+   * Método que abre el modal para crear o editar una ordenTrabajo.
+   * @param ordenTrabajo La ordenTrabajo a editar (opcional).
    */
-  public openModal(solicitud?: Solicitud): void {
-    // Abre el modal para crear o editar una solicitud
-    var dialogRef = this.dialog.open(ModalSolicitudComponent, {
-      width: '50%',
-      height: '70%',
+  public openModal(ordenTrabajo?: OrdenTrabajo): void {
+    // Abre el modal para crear o editar una ordenTrabajo
+    var dialogRef = this.dialog.open(ModalOrdenTrabajoComponent, {
       enterAnimationDuration: '1000ms',
       exitAnimationDuration: '1000ms',
     });
 
-    if (solicitud != null)
-      dialogRef.componentInstance.solicitud = solicitud;
-    dialogRef.afterClosed().subscribe({
-      next: result => {
-        console.info('Result:', result);
-        if (result) {
-          // Refresca el listado de solicitudList después de crear o editar una solicitud
-          this.obtenerListaNoEliminadaOrdenada(this.sortColumn, this.sortDirection);
+    if (ordenTrabajo != null)
+      //dialogRef.componentInstance.ordenTrabajo = ordenTrabajo;
+      dialogRef.afterClosed().subscribe({
+        next: result => {
+          console.info('Result:', result);
+          if (result) {
+            // Refresca el listado de ordenTrabajoList después de crear o editar una ordenTrabajo
+            this.obtenerListaNoEliminadaOrdenada(this.sortColumn, this.sortDirection);
+          }
+        },
+        error: error => {
+          console.error(error);
         }
-      },
-      error: error => {
-        console.error(error);
-      }
-    });
+      });
   }
 
   /**
@@ -339,30 +328,32 @@ export class SolicitudComponent {
     this.obtenerListaNoEliminadaOrdenada(this.sortColumn, this.sortDirection);
   }
 
-  tipoSolicitud(tipoSolicitud: string): string {
-    switch (tipoSolicitud) {
-      case 'I':
-        return 'INGRESADA';
-      case 'R':
-        return 'RECHAZADA';
-      case 'A':
-        return 'APROBADA';
-      case 'M':
-        return 'MANTENIMIENTO';
+  convertEstadoOrdenTrabajo(estadoOT: string): string {
+    switch (estadoOT) {
+      case 'G':
+        return 'GENERADA';
       case 'F':
         return 'FINALIZADA';
       default:
-        return 'INGRESADA';
+        return 'GENERADA';
     }
   }
-  estadoSolicitud(tipoSolicitud: string): string {
-    switch (tipoSolicitud) {
-      case 'R':
-        return 'RECHAZAR';
-      case 'A':
-        return 'APROBAR';
+  estadoOrdenTrabajo(estadoOT: string): string {
+    switch (estadoOT) {
+      case 'F':
+        return 'FINALIZAR';
       default:
-        return 'RECHAZAR';
+        return 'FINALIZAR';
     }
   }
+  kmProximoMantenimiento: number = 0;
+
+  calculoProximoMantenimiento(ordenTrabajo: OrdenTrabajo) {
+    if (ordenTrabajo.mantenimiento.solicitud.vinculacion.vinculacionFlota.flotaVehicular.tipoVehiculo.codigo != 2) {
+      this.kmProximoMantenimiento = ordenTrabajo.mantenimiento.kilometrajeActual + KM_OTROS;
+    } else {
+      this.kmProximoMantenimiento = ordenTrabajo.mantenimiento.kilometrajeActual + KM_MOTOS;
+    }
+  }
+
 }

@@ -6,7 +6,7 @@
         <form [formGroup]="formulario">
           <div class="row">
             <div class="col-md-4">
-              <label for="solicitud" class="col-form-label">Nro.Solicitud:</label>
+              <label for="solicitud" class="col-form-label">Nro. Solicitud:</label>
               <input type="text" id="solicitud" placeholder="Ingresar solicitud" formControlName="solicitud"
                 class="form-control" [matAutocomplete]="autoFlota" (input)="onInputValueChangedSolicitud($event)">
               <mat-autocomplete #autoFlota="matAutocomplete" [displayWith]="displaySolicitud"
@@ -22,7 +22,7 @@
                 formControlName="kilometrajeActual">
             </div>
             <div class="col-md-4">
-              <label for="tipoVehiculo" class="col-form-label">Tipo Vehiculo:</label>
+              <label for="tipoVehiculo" class="col-form-label">Tipo Vehículo:</label>
               <input type="text" class="form-control" id="tipoVehiculo" formControlName="tipoVehiculo">
             </div>
           </div>
@@ -42,7 +42,7 @@
           </div>
           <div class="row">
             <div class="col-md-4">
-              <label for="identificacion" class="col-form-label">Identificacion:</label>
+              <label for="identificacion" class="col-form-label">Identificación:</label>
               <input type="text" class="form-control" id="identificacion" formControlName="identificacion">
             </div>
             <div class="col-md-8">
@@ -50,7 +50,7 @@
               <input type="text" class="form-control" id="nombreCompleto" formControlName="nombreCompleto">
             </div>
           </div>
-          <div class="row">
+          <div class="row mb-3">
             <div class="col-md-6">
               <label for="asunto" class="col-form-label">Asunto:</label>
               <textarea type="text" class="form-control" id="asunto" formControlName="asunto"></textarea>
@@ -60,7 +60,7 @@
               <textarea type="text" class="form-control" id="detalle" formControlName="detalle"></textarea>
             </div>
           </div>
-          <div class="row">
+          <div class="row mb-3">
             <div class="col-md-6">
               <label>Mantenimientos:</label>
               <mat-selection-list #matList (selectionChange)="onChangeMantenimiento($event)">
@@ -70,33 +70,56 @@
                 </mat-list-option>
               </mat-selection-list>
             </div>
-            <div class="card-body table-responsive p-3">
-              <table class="table table-bordered">
+            <div class="table-container col-md-6">
+              <table class="table table-bordered table-striped">
                 <thead>
                   <tr>
+                    <th colspan="3" class="text-center">DETALLE</th>
+                  </tr>
+                  <tr>
                     <th>
-                      SUBTOTAL
+                      Cantidad
                     </th>
                     <th>
-                      IVA
+                      Descripción
                     </th>
                     <th>
-                      TOTAL
+                      Precio Unitario
+                    </th>
+                    <th>
+                      Importe
                     </th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr *ngFor="let valor of listValor">
-                    <td>{{ valor.costo | number:'1.2-2'}}</td>
-                    <td>{{ valor.tipoContrato.iva }}%</td>
+                    <td class="text-center">1</td>
+                    <td>{{valor.descripcion}}</td>
+                    <td class="text-right">{{valor.costo | number:'1.2-2'}}</td>
+                    <td class="text-right">{{valor.costo | number:'1.2-2'}}</td>
                 </tbody>
+                <tfoot>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td class="text-bold">SUBTOTAL:</td>
+                    <td class="text-right">{{ subTotal | number:'1.2-2' }}</td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td class="text-bold">IVA:</td>
+                    <td class="text-right">{{ ivaTotal | number:'1.2-2' }}</td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td class="text-bold">TOTAL:</td>
+                    <td class="text-right">{{ total | number:'1.2-2' }}</td>
+                  </tr>
+                </tfoot>
               </table>
             </div>
-            <!-- <div class="col-md-8">
-              <label for="tipoMantenimiento" class="col-form-label">Tipo Mantenimiento:</label>
-              <input type="text" class="form-control" maxlength="10" id="tipoMantenimiento"
-                formControlName="tipoMantenimiento">
-            </div> -->
           </div>
         </form>
       </div>

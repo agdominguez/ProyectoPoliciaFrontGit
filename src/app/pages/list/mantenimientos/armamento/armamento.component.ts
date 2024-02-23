@@ -1,24 +1,24 @@
-import { MatDialog } from '@angular/material/dialog';
-import { Subscription } from 'rxjs';
 import { Component } from '@angular/core';
-import { Mantenimiento } from 'src/app/entities/mantenimientos/Mantenimiento';
-import { MantenimientoService } from 'src/app/services/services-mantenimientos/mantenimiento.service';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { Armamento } from 'src/app/entities/mantenimientos/Armamento';
+import { ModalArmamentoComponent } from 'src/app/pages/forms/forms-mantenimientos/modal-armamento/modal-armamento.component';
+import { ArmamentoService } from 'src/app/services/services-mantenimientos/armamento.service';
 import Swal from 'sweetalert2';
-import { ModalMantenimientoComponent } from 'src/app/pages/forms/forms-mantenimientos/modal-mantenimiento/modal-mantenimiento.component';
 
 @Component({
-  selector: 'app-mantenimiento',
-  templateUrl: './mantenimiento.component.html',
-  styleUrls: ['./mantenimiento.component.css']
+  selector: 'app-armamento',
+  templateUrl: './armamento.component.html',
+  styleUrls: ['./armamento.component.css']
 })
-export class MantenimientoComponent {
+export class ArmamentoComponent {
 
   page!: number;
   pageSize: number = 10;
-  mantenimientoList!: Mantenimiento[];
+  armamentoList!: Armamento[];
   paginador: any;
-  nombre: string = 'mantenimiento';
+  nombre: string = 'armamento';
   etiquetabtn: string = '+ Crear Nuevo';
   searchValue: string = '';
   private subscriptions: Subscription[] = [];
@@ -29,7 +29,7 @@ export class MantenimientoComponent {
 
   constructor(
     private dialog: MatDialog,
-    private mantenimientoService: MantenimientoService,
+    private armamentoService: ArmamentoService,
     private activatedRoute: ActivatedRoute
   ) {
     this.url = this.activatedRoute.snapshot.parent?.url.join('/');
@@ -51,7 +51,7 @@ export class MantenimientoComponent {
         this.page = 0;
       }
 
-      // Obtiene la lista de mantenimientoList sin eliminar para la página actual
+      // Obtiene la lista de armamentoList sin eliminar para la página actual
       this.obtenerListaNoEliminadaOrdenada(this.sortColumn, this.sortDirection);
     });
     this.subscriptions.push(sub);
@@ -69,15 +69,15 @@ export class MantenimientoComponent {
    * Método que obtiene la lista de tiposTelefono no eliminados para la página actual con ordenamiento.
    */
   obtenerListaNoEliminadaOrdenada(sortColumn: string, sortDirection: string): void {
-    // Realiza una mantenimiento al servicio para obtener la lista de tiposTelefono no eliminados con ordenamiento
-    const sub: Subscription = this.mantenimientoService.getNotDeletedOrdered(this.pageSize, this.page, sortColumn, sortDirection).subscribe({
+    // Realiza una solicitud al servicio para obtener la lista de tiposTelefono no eliminados con ordenamiento
+    const sub: Subscription = this.armamentoService.getNotDeletedOrdered(this.pageSize, this.page, sortColumn, sortDirection).subscribe({
       next: (response: any) => {
         // Se procesa la respuesta y se actualiza el componente con los datos recibidos
-        this.mantenimientoList = response.content as Mantenimiento[];
+        this.armamentoList = response.content as Armamento[];
         this.paginador = response;
       },
       error: (error: any) => {
-        // Se manejan los errores que puedan ocurrir durante la mantenimiento
+        // Se manejan los errores que puedan ocurrir durante la solicitud
         console.error('Error al cargar items de la lista', error);
         Swal.fire('Error', 'Ha ocurrido un error al cargar la lista. Por favor, intenta nuevamente más tarde.', 'error');
       }
@@ -87,7 +87,7 @@ export class MantenimientoComponent {
   }
 
   /**
-   * Método que realiza la búsqueda de mantenimientoList según el término especificado.
+   * Método que realiza la búsqueda de armamentoList según el término especificado.
    */
   searchList(): void {
     if (this.searchValue.trim() === '') {
@@ -96,10 +96,10 @@ export class MantenimientoComponent {
     } else {
       // Si hay un término de búsqueda, realizar la búsqueda con el término especificado
       this.page = 0; // Establecer la página inicial para la búsqueda
-      const sub = this.mantenimientoService.searchList(this.searchValue, this.page, this.pageSize).subscribe({
+      const sub = this.armamentoService.searchList(this.searchValue, this.page, this.pageSize).subscribe({
         next: (response: any) => {
           // Se procesa la respuesta y se actualiza el componente con los datos recibidos
-          this.mantenimientoList = response.content as Mantenimiento[];
+          this.armamentoList = response.content as Armamento[];
           this.paginador = response;
         },
         error: (error: any) => {
@@ -124,11 +124,11 @@ export class MantenimientoComponent {
   }
 
   /**
-   * Método que elimina una mantenimiento.
-   * @param mantenimiento La mantenimiento a eliminar.
+   * Método que elimina una armamento.
+   * @param armamento La armamento a eliminar.
    */
-  delete(mantenimiento: Mantenimiento): void {
-    // Muestra una alerta para confirmar la eliminación de la mantenimiento
+  delete(armamento: Armamento): void {
+    // Muestra una alerta para confirmar la eliminación de la armamento
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
         confirmButton: 'btn btn-success me-2',
@@ -139,7 +139,7 @@ export class MantenimientoComponent {
 
     swalWithBootstrapButtons.fire({
       title: '¿Está seguro?',
-      text: `¿Está seguro que desea eliminar ${mantenimiento.codigo}?`,
+      text: `¿Está seguro que desea eliminar ${armamento.nombre}?`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Sí, eliminar',
@@ -147,19 +147,19 @@ export class MantenimientoComponent {
       reverseButtons: true
     }).then((result) => {
       if (result.isConfirmed) {
-        // Realiza una mantenimiento al servicio para marcar la mantenimiento como eliminada
-        const sub = this.mantenimientoService.statusEliminado(mantenimiento.codigo).subscribe({
+        // Realiza una solicitud al servicio para marcar la armamento como eliminada
+        const sub = this.armamentoService.statusEliminado(armamento.codigo).subscribe({
           next: response => {
-            // Si se elimina correctamente, se filtra la mantenimiento de la lista local
-            this.mantenimientoList = this.mantenimientoList.filter(ec => ec !== mantenimiento);
+            // Si se elimina correctamente, se filtra la armamento de la lista local
+            this.armamentoList = this.armamentoList.filter(ec => ec !== armamento);
             swalWithBootstrapButtons.fire(
               'Elemento eliminado',
-              `Elemento ${mantenimiento.codigo} marcado como eliminado con éxito.`,
+              `Elemento ${armamento.nombre} marcado como eliminado con éxito.`,
               'success'
             );
           },
           error: error => {
-            // Se maneja el error en caso de que ocurra algún problema al eliminar la mantenimiento
+            // Se maneja el error en caso de que ocurra algún problema al eliminar la armamento
             swalWithBootstrapButtons.fire(
               'Error',
               'Hubo un error al eliminar Elemento',
@@ -173,25 +173,23 @@ export class MantenimientoComponent {
   }
 
   /**
-   * Método que abre el modal para crear o editar una mantenimiento.
-   * @param mantenimiento La mantenimiento a editar (opcional).
+   * Método que abre el modal para crear o editar una armamento.
+   * @param armamento La armamento a editar (opcional).
    */
-  public openModal(mantenimiento?: Mantenimiento): void {
-    // Abre el modal para crear o editar una mantenimiento
-    var dialogRef = this.dialog.open(ModalMantenimientoComponent, {
-      height:'80%',
-      width:'70%',
+  public openModal(armamento?: Armamento): void {
+    // Abre el modal para crear o editar una armamento
+    var dialogRef = this.dialog.open(ModalArmamentoComponent, {
       enterAnimationDuration: '1000ms',
       exitAnimationDuration: '1000ms',
     });
 
-    if (mantenimiento != null)
-      dialogRef.componentInstance.mantenimiento = mantenimiento;
+    if (armamento != null)
+      dialogRef.componentInstance.armamento = armamento;
     dialogRef.afterClosed().subscribe({
       next: result => {
         console.info('Result:', result);
         if (result) {
-          // Refresca el listado de mantenimientoList después de crear o editar una mantenimiento
+          // Refresca el listado de armamentoList después de crear o editar una armamento
           this.obtenerListaNoEliminadaOrdenada(this.sortColumn, this.sortDirection);
         }
       },
@@ -246,4 +244,5 @@ export class MantenimientoComponent {
     // Realiza la llamada para obtener la lista actualizada con el nuevo tamaño de página
     this.obtenerListaNoEliminadaOrdenada(this.sortColumn, this.sortDirection);
   }
+
 }

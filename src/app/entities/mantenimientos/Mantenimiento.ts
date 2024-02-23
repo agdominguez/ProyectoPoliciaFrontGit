@@ -1,5 +1,4 @@
 import { Solicitud } from "./Solicitud";
-import { TipoMantenimiento } from "./TipoMantenimiento";
 
 export class Mantenimiento {
   codigo!: number;
@@ -7,7 +6,13 @@ export class Mantenimiento {
   asunto!: string;
   detalle!: string;
   fechaIngreso!: Date;
-  tipoMantenimiento!: TipoMantenimiento;
   kilometrajeActual!: number;
   eliminado!: string;
+
+  constructorPK(codigo: number) {
+    const mantenimiento = new Mantenimiento();
+    mantenimiento.codigo = codigo;
+    return mantenimiento;
+  }
+
 }

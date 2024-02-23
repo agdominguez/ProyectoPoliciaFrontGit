@@ -4,7 +4,7 @@ export enum TipoSolicitud {
   INGRESADA = 'I',
   RECHAZADA = 'R',
   APROBADA = 'A',
-  MANTENIMIENTO = 'P',
+  MANTENIMIENTO = 'M',
   FINALIZADA = 'F',
 }
 

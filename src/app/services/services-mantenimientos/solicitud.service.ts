@@ -160,6 +160,12 @@ export class SolicitudService {
   // Eliminado en estado N.
   // *****************************************************
 
+  actualizaEstadoSolicitud(solicitud: Solicitud): Observable<any> {
+    //console.log(this.urlEndPoint, solicitud);
+    return this.http.post<any>(this.urlEndPoint + '/p_actualiza_estado', solicitud, { headers: this.httpHeaders }).pipe(
+      catchError(error => this.handleError(error))
+    );
+  }
   statusEliminado(id: number): Observable<any> {
     const url = `${this.urlEndPoint}/${id}/eliminar`;
     return this.http.put<any>(url, {}).pipe(
